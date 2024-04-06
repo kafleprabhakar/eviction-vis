@@ -1,6 +1,12 @@
 
 <div id="map" class="map"></div>
 <div class="map-overlay" id="legend">
+    <div id="type-selector">
+        <input type="radio" id="evictions" name="vis-type" value="evictions" checked>
+        <label for="evictions">Eviction Numbers</label>
+        <input type="radio" id="percent" name="vis-type" value="percent">
+        <label for="percent">Eviction Rate</label>
+    </div>
     <h2>Number of evictions in { year }</h2>
     <div id="legend-color"></div>
     <div id="legend-label">
@@ -30,6 +36,7 @@
     const lowColor = '#F8C80B';
     const highColor = '#ED5701';
     let year = 2020;
+    let vis_type = 'evictions';
 
     onMount(() => {
         // Initialize Mapbox map
@@ -52,10 +59,12 @@
                 });
                 // Load CSV data
                 d3.csv('src/datasets/evictions.csv').then(csvData => {
-                    // let maxEvictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
-                    // let minEvictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
-                    let maxEvictions = 0;
-                    let minEvictions = 0;
+                    // let max_evictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
+                    // let min_evictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
+                    let max_evictions = 0;
+                    let min_evictions = 0;
+                    let max_percent = 0;
+                    let min_percent = 0;
                     // Update GeoJSON data with CSV data
                     map.getSource('census-tracts').setData({
                         type: 'FeatureCollection',
@@ -69,20 +78,42 @@
                                 feature.properties.evictions_2021 = parseFloat(evictionData['2021_eviction']);
                                 feature.properties.evictions_2022 = parseFloat(evictionData['2022_eviction']);
                                 feature.properties.evictions_2023 = parseFloat(evictionData['2023_eviction']);
-                                maxEvictions = Math.max(
-                                    maxEvictions,
+                                max_evictions = Math.max(
+                                    max_evictions,
                                     feature.properties.evictions_2020,
                                     feature.properties.evictions_2021,
                                     feature.properties.evictions_2022,
                                     feature.properties.evictions_2023
                                 );
-                                minEvictions = Math.min(
-                                    minEvictions,
+                                min_evictions = Math.min(
+                                    min_evictions,
                                     feature.properties.evictions_2020,
                                     feature.properties.evictions_2021,
                                     feature.properties.evictions_2022,
                                     feature.properties.evictions_2023
                                 );
+
+                                feature.properties.percent_2020 = parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['pop']) * 100;
+                                feature.properties.percent_2021 = parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['pop']) * 100;
+                                feature.properties.percent_2022 = parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['pop']) * 100;
+                                feature.properties.percent_2023 = parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['pop']) * 100;
+
+                                if (!isNaN(feature.properties.percent_2020)) {
+                                    max_percent = Math.max(
+                                        max_percent,
+                                        feature.properties.percent_2020,
+                                        feature.properties.percent_2021,
+                                        feature.properties.percent_2022,
+                                        feature.properties.percent_2023
+                                    );
+                                    min_percent = Math.min(
+                                        min_percent,
+                                        feature.properties.percent_2020,
+                                        feature.properties.percent_2021,
+                                        feature.properties.percent_2022,
+                                        feature.properties.percent_2023
+                                    );
+                                }
                                 feature.properties.description = `
                                     <b>${feature.properties.geoid}</b>
                                 `;
@@ -101,9 +132,9 @@
                             'fill-color': [
                                 'interpolate',
                                 ['linear'],
-                                ['get', 'evictions_2020'],
-                                minEvictions, lowColor,
-                                maxEvictions, highColor,
+                                ['get', vis_type + '_' + year],
+                                min_evictions, lowColor,
+                                max_evictions, highColor,
                             ],
                             'fill-opacity': 0.7
                         },
@@ -171,23 +202,52 @@
                         });
                     });
 
+                    function updateMap() {
+                        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
+                        paintProperty[2][1] = vis_type + "_" + year;
+                        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
+                    }
+
+                    function updateLegend() {
+                        const lowLegend = document.getElementById('low-legend');
+                        const highLegend = document.getElementById('high-legend');
+                        if (vis_type === 'percent') {
+                            lowLegend!.textContent = min_percent.toFixed(2) + '%';
+                            highLegend!.textContent = max_percent.toFixed(2) + '%';
+                        } else {
+                            lowLegend!.textContent = min_evictions.toLocaleString();
+                            highLegend!.textContent = max_evictions.toLocaleString();
+                        }
+
+                        console.log(min_percent, max_percent, min_evictions, max_evictions);
+                    }
+
                     const legend = document.getElementById('legend');
-                    const lowLegend = document.getElementById('low-legend');
-                    const highLegend = document.getElementById('high-legend');
                     const legendColor = document.getElementById('legend-color');
                     // Set background of legend color to be a gradient between lowColor and highColor
                     legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
                     // Set text of low and high legend
-                    lowLegend!.textContent = minEvictions.toLocaleString();
-                    highLegend!.textContent = maxEvictions.toLocaleString();
+                    updateLegend();
 
                     // update hour filter when the slider is dragged
                     document.getElementById('slider')!.addEventListener('input', (event) => {
                         year = parseInt(event.target.value);
                         // update the map
-                        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
-                        paintProperty[2][1] = "evictions_" + year;
-                        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
+                        updateMap();
+                    });
+
+                    const radios = document.querySelectorAll('input[name="vis-type"]');
+
+                    // Loop through each radio button and add an event listener
+                    radios.forEach(radio => {
+                        radio.addEventListener('change', (event) => {
+                            console.log(map.getSource('census-tracts')._data.features);
+                            // When a radio button is selected, log its value to the console
+                            console.log(event.target.value);
+                            vis_type = event.target.value;
+                            updateMap();
+                            updateLegend();
+                        });
                     });
                 });
             });
@@ -213,7 +273,7 @@
     }
 
     .map-overlay#legend {
-        bottom: 16px;
+        top: 16px;
         right: 16px;
     }
 

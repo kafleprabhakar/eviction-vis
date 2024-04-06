@@ -1,2 +1,209 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<!-- js starts here -->
+<script>
+	import { onMount, onDestroy } from "svelte";
+	import * as mapbox from 'mapbox-gl';
+
+	let map;
+	let mapContainer;
+	let lng, lat, zoom;
+
+	lng = -74.0059;
+	lat = 40.7128;
+	zoom = 12;
+
+	onMount(() => {
+  	const initialState = { lng: lng, lat: lat, zoom: zoom };
+
+  	map = new mapbox.Map({
+		container: mapContainer,
+		accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
+		style: `mapbox://styles/mapbox/light-v11`,
+		center: [initialState.lng, initialState.lat],
+		zoom: initialState.zoom,
+		});
+
+	map.on('load', () => {
+        let filterHour = ['==', ['number', ['get', 'Hour']], 12];
+        let filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
+
+        map.addLayer({
+          id: 'collisions',
+          type: 'circle',
+          source: {
+            type: 'geojson',
+            data: 'src/datasets/collisions1601.geojson' // replace this with the url of your own geojson
+          },
+          paint: {
+            'circle-radius': [
+              'interpolate',
+              ['linear'],
+              ['number', ['get', 'Casualty']],
+              0,
+              4,
+              5,
+              24
+            ],
+            'circle-color': [
+              'interpolate',
+              ['linear'],
+              ['number', ['get', 'Casualty']],
+              0,
+              '#2DC4B2',
+              1,
+              '#3BB3C3',
+              2,
+              '#669EC4',
+              3,
+              '#8B88B6',
+              4,
+              '#A2719B',
+              5,
+              '#AA5E79'
+            ],
+            'circle-opacity': 0.8
+          },
+          'filter': ['all', filterHour, filterDay]
+        });
+
+	// update hour filter when the slider is dragged
+	document.getElementById('slider').addEventListener('input', (event) => {
+		const hour = parseInt(event.target.value);
+		// update the map
+		filterHour = ['==', ['number', ['get', 'Hour']], hour];
+		map.setFilter('collisions', ['all', filterHour, filterDay]);
+
+		// converting 0-23 hour to AMPM format
+		const ampm = hour >= 12 ? 'PM' : 'AM';
+		const hour12 = hour % 12 ? hour % 12 : 12;
+
+		// update text in the UI
+		document.getElementById('active-hour').innerText = hour12 + ampm;
+	});
+
+    document.getElementById('filters').addEventListener('change', (event) => {
+		const day = event.target.value;
+		// update the map filter
+		if (day === 'all') {
+			filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
+		} else if (day === 'weekday') {
+			filterDay = [
+			'match',
+			['get', 'Day'],
+			['Sat', 'Sun'],
+			false,
+			true
+			];
+		} else if (day === 'weekend') {
+			filterDay = [
+			'match',
+			['get', 'Day'],
+			['Sat', 'Sun'],
+			true,
+			false
+			];
+		} else {
+			console.error('error');
+		}
+		map.setFilter('collisions', ['all', filterHour, filterDay]);
+          });
+      });
+		
+	});
+
+	onDestroy(() => {
+		// map.remove();
+	});
+
+</script>
+
+<!-- html starts here -->
+<h1>Visualization Proof of Concept</h1>
+<div class="map-wrap">
+	<div class="map" bind:this={mapContainer} />
+</div>
+
+<div id="console">
+	<h1>Motor vehicle collisions</h1>
+	<p>Data:
+		<a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Motor-Vehicle-Collisions/h9gi-nx95">
+		Motor vehicle collision injuries and death
+		</a>
+		in NYC, Jan 2016
+	</p>
+		
+	<div class="session">
+		<h2>Casualty</h2>
+		<div class="row colors"></div>
+		<div class="row labels">
+			<div class="label">0</div>
+			<div class="label">1</div>
+			<div class="label">2</div>
+			<div class="label">3</div>
+			<div class="label">4</div>
+			<div class="label">5+</div>
+		</div>
+	</div>
+
+	<div class="session">
+		<h2>Hour: <label id="active-hour">12PM</label></h2>
+		<input
+		id="slider"
+		class="row"
+		type="range"
+		min="0"
+		max="23"
+		step="1"
+		value="12"
+		/>
+	</div>
+
+	<div class="session">
+		<h2>Day of the week</h2>
+		<div class="row" id="filters">
+		<input id="all" type="radio" name="toggle" value="all" checked="checked" />
+		<label for="all">All</label>
+		<input id="weekday" type="radio" name="toggle" value="weekday" />
+		<label for="weekday">Weekday</label>
+		<input id="weekend" type="radio" name="toggle" value="weekend" />
+		<label for="weekend">Weekend</label>
+		</div>
+	</div>
+</div>
+
+<!-- css starts here -->
+<style>
+	.map {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+
+	#console {
+		position: absolute;
+		width: 240px;
+		margin: 10px;
+		padding: 10px 20px;
+		background-color: white;
+	}
+
+	.session {
+  		margin-bottom: 20px;
+	}
+
+	.row {
+		height: 12px;
+		width: 100%;
+	}
+
+	.colors {
+		background: linear-gradient(to right, #2dc4b2, #3bb3c3, #669ec4, #8b88b6, #a2719b, #aa5e79);
+		margin-bottom: 5px;
+	}
+
+	.label {
+		width: 15%;
+		display: inline-block;
+		text-align: center;
+	}
+
+</style>

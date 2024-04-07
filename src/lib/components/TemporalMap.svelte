@@ -1,30 +1,38 @@
 
-<div id="map" class="map"></div>
-<div class="map-overlay" id="legend">
-    <div id="type-selector">
-        <input type="radio" id="evictions" name="vis-type" value="evictions" checked>
-        <label for="evictions">Eviction Numbers</label>
-        <input type="radio" id="percent" name="vis-type" value="percent">
-        <label for="percent">Eviction Rate</label>
+<div id="vis-container">
+    <div id="map-container">
+        <div id="map" class="map"></div>
     </div>
-    <h2>Number of evictions in { year }</h2>
-    <div id="legend-color"></div>
-    <div id="legend-label">
-        <div class="legend-item" id="low-legend"></div>
-        <div class="legend-item" id="high-legend"></div>
+    <div class="map-overlay" id="legend">
+        <div id="type-selector">
+            <input type="radio" id="evictions" name="vis-type" value="evictions" checked>
+            <label for="evictions">Eviction Numbers</label>
+            <input type="radio" id="percent" name="vis-type" value="percent">
+            <label for="percent">Eviction Rate</label>
+        </div>
+        <h2>Number of evictions in { year }</h2>
+        <div id="legend-color"></div>
+        <div id="legend-label">
+            <div class="legend-item" id="low-legend"></div>
+            <div class="legend-item" id="high-legend"></div>
+        </div>
+        <div id="time-slider">
+            <h2>Year: <span id="active-year">{ year }</span></h2>
+            <input
+                id="slider"
+                class="row"
+                type="range"
+                min="2020"
+                max="2023"
+                step="1"
+                value="{ year }"
+            />
+        </div>
+        
+        <div id="trend-graph">
+            Hover over the map to see the numbers. Click the census tract to see the trend.
+        </div>
     </div>
-    <div id="time-slider">
-		<h2>Year: <span id="active-year">{ year }</span></h2>
-		<input
-            id="slider"
-            class="row"
-            type="range"
-            min="2020"
-            max="2023"
-            step="1"
-            value="2020"
-		/>
-	</div>
 </div>
 
 <script lang="ts">
@@ -33,10 +41,112 @@
     import * as d3 from 'd3';
     // import type { TemporalMap } from "./temporalMap.type";
 
-    const lowColor = '#F8C80B';
-    const highColor = '#ED5701';
+    const lowColor = '#f7d654';
+    const highColor = '#e64302';
     let year = 2020;
     let vis_type = 'evictions';
+
+    function draw_graph(data) {
+        console.log({data});
+        // set the dimensions and margins of the graph
+        var margin = {top: 10, right: 30, bottom: 30, left: 60},
+            width = 200 - margin.left - margin.right,
+            height = 200 - margin.top - margin.bottom;
+        
+        let container = document.getElementById('trend-graph');
+        container.innerHTML = '';
+
+        // append the svg object to the body of the page
+        var svg = d3.select("#trend-graph")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        // Add X axis --> it is a date format
+        var x = d3.scaleTime()
+        .domain(d3.extent(data, function(d) { return d.year; }))
+        .range([ 0, width ]);
+        svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+        // Add Y axis
+        var y = d3.scaleLinear()
+        .domain([0, d3.max(data, function(d) { return +d.evictions; })])
+        .range([ height, 0 ]);
+        svg.append("g")
+        .call(d3.axisLeft(y).ticks(5));
+
+        var bisect = d3.bisector(function(d) { return d.year; }).left;
+
+        var focus = svg
+            .append('g')
+            .append('circle')
+            .style("fill", "none")
+            .attr("stroke", highColor)
+            .attr('r', 3)
+            .style("opacity", 0);
+
+        var focusText = svg
+            .append('g')
+            .append('text')
+            .style("opacity", 0)
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle")
+
+        // Add the line
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", highColor)
+            .attr("stroke-width", 1.5)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d.year) })
+                .y(function(d) { return y(d.evictions) })
+            );
+        
+        // Create a rect on top of the svg area: this rectangle recovers mouse position
+        svg
+            .append('rect')
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .attr('width', width)
+            .attr('height', height)
+            .on('mouseover', mouseover)
+            .on('mousemove', mousemove)
+            .on('mouseout', mouseout);
+
+
+        // What happens when the mouse move -> show the annotations at the right positions.
+        function mouseover() {
+            focus.style("opacity", 1)
+            focusText.style("opacity",1)
+        }
+
+        function mousemove(event) {
+            // recover coordinate we need
+            var x0 = x.invert(d3.pointer(event)[0]);
+            console.log({x0});
+            var i = bisect(data, x0, 1);
+            let selectedData = data[i];
+            console.log(selectedData);
+            console.log({i});
+            focus
+            .attr("cx", x(selectedData.year))
+            .attr("cy", y(selectedData.evictions))
+            focusText
+            .html(selectedData.evictions + " evictions")
+            .attr("x", x(selectedData.year)+15)
+            .attr("y", y(selectedData.evictions))
+            }
+        function mouseout() {
+            focus.style("opacity", 0)
+            focusText.style("opacity", 0)
+        }
+    }
 
     onMount(() => {
         // Initialize Mapbox map
@@ -136,7 +246,7 @@
                                 min_evictions, lowColor,
                                 max_evictions, highColor,
                             ],
-                            'fill-opacity': 0.7
+                            'fill-opacity': 0.9
                         },
                         filter: ['has', 'evictions_2020']
                     });
@@ -202,6 +312,17 @@
                         });
                     });
 
+                    map.on('click', 'census-tracts', (e) => {
+                        const props = e.features[0].properties;
+                        console.log(props);
+                        draw_graph([
+                            { year: 2020, evictions: props.evictions_2020 },
+                            { year: 2021, evictions: props.evictions_2021 },
+                            { year: 2022, evictions: props.evictions_2022 },
+                            { year: 2023, evictions: props.evictions_2023 }
+                        ]);
+                    });
+
                     function updateMap() {
                         const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
                         paintProperty[2][1] = vis_type + "_" + year;
@@ -256,6 +377,18 @@
 </script>
 
   <style>
+    #vis-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        margin: -8px; /* Offset the 8px margin added by default in body */
+        display: flex;
+    }
+    #map-container {
+        position: relative;
+        height: 100%;
+        flex-grow: 1;
+    }
     .map {
       position: absolute;
       top: 0;
@@ -265,7 +398,9 @@
     }
 
     .map-overlay {
-        position: absolute;
+        /* position: absolute; */
+        min-width: 200px;
+        max-width: 320px;
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;
@@ -273,8 +408,8 @@
     }
 
     .map-overlay#legend {
-        top: 16px;
-        right: 16px;
+        /* top: 16px;
+        right: 16px; */
     }
 
     #legend-color {

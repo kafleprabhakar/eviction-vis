@@ -326,6 +326,13 @@
                     function updateMap() {
                         const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
                         paintProperty[2][1] = vis_type + "_" + year;
+                        if (vis_type === 'percent') {
+                            paintProperty[3] = min_percent;
+                            paintProperty[5] = max_percent;
+                        } else {
+                            paintProperty[3] = min_evictions;
+                            paintProperty[5] = max_evictions;
+                        }
                         map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
                     }
 

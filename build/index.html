@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+		
+		
+		<link href="./app/immutable/assets/2.sU2LqfqR.css" rel="stylesheet">
+		<link rel="modulepreload" href="./app/immutable/entry/start.Ds8nO0c1.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/entry.DtJLSQyf.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.BnLxJkeY.js">
+		<link rel="modulepreload" href="./app/immutable/entry/app.DdBB2P9v.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.u8s2zRu2.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/0.ywwWxv_y.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/2.BpMpUDCt.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/mapbox-gl.BdOqyTyn.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">     <h1 data-svelte-h="svelte-11kzywz">Visualization Proof of Concept</h1> <div class="map-wrap"><div class="map svelte-1uaset"></div></div> <div id="console" class="svelte-1uaset" data-svelte-h="svelte-2wt4o9"><h1>Motor vehicle collisions</h1> <p>Data:
+		<a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Motor-Vehicle-Collisions/h9gi-nx95">Motor vehicle collision injuries and death</a>
+		in NYC, Jan 2016</p> <div class="session svelte-1uaset"><h2>Casualty</h2> <div class="row colors svelte-1uaset"></div> <div class="row labels svelte-1uaset"><div class="label svelte-1uaset">0</div> <div class="label svelte-1uaset">1</div> <div class="label svelte-1uaset">2</div> <div class="label svelte-1uaset">3</div> <div class="label svelte-1uaset">4</div> <div class="label svelte-1uaset">5+</div></div></div> <div class="session svelte-1uaset"><h2>Hour: <label id="active-hour">12PM</label></h2> <input id="slider" class="row svelte-1uaset" type="range" min="0" max="23" step="1" value="12"></div> <div class="session svelte-1uaset"><h2>Day of the week</h2> <div class="row svelte-1uaset" id="filters"><input id="all" type="radio" name="toggle" value="all" checked="checked"> <label for="all">All</label> <input id="weekday" type="radio" name="toggle" value="weekday"> <label for="weekday">Weekday</label> <input id="weekend" type="radio" name="toggle" value="weekend"> <label for="weekend">Weekend</label></div></div></div>  
+			
+			<script>
+				{
+					__sveltekit_rdfb14 = {
+						base: new URL(".", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					const data = [null,null];
+
+					Promise.all([
+						import("./app/immutable/entry/start.Ds8nO0c1.js"),
+						import("./app/immutable/entry/app.DdBB2P9v.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data,
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>

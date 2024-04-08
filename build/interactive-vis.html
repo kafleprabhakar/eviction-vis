@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+		
+		
+		<link href="./app/immutable/assets/3.1gsi9Zyc.css" rel="stylesheet">
+		<link rel="modulepreload" href="./app/immutable/entry/start.Ds8nO0c1.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/entry.DtJLSQyf.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.BnLxJkeY.js">
+		<link rel="modulepreload" href="./app/immutable/entry/app.DdBB2P9v.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.u8s2zRu2.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/0.ywwWxv_y.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/3.DkuzxOwr.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/mapbox-gl.BdOqyTyn.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">  <div id="vis-container" class="svelte-dxa9p6"><div id="map-container" class="svelte-dxa9p6" data-svelte-h="svelte-1ktmx0i"><div id="map" class="map svelte-dxa9p6"></div></div> <div class="map-overlay svelte-dxa9p6" id="legend"><div id="type-selector" data-svelte-h="svelte-dfpcbo"><input type="radio" id="evictions" name="vis-type" value="evictions" checked> <label for="evictions">Eviction Numbers</label> <input type="radio" id="percent" name="vis-type" value="percent"> <label for="percent">Eviction Rate</label></div> <h2>Number of evictions in 2020</h2> <div id="legend-color" class="svelte-dxa9p6"></div> <div id="legend-label" class="svelte-dxa9p6" data-svelte-h="svelte-12dx64e"><div class="legend-item svelte-dxa9p6" id="low-legend"></div> <div class="legend-item svelte-dxa9p6" id="high-legend"></div></div> <div id="time-slider" class="svelte-dxa9p6"><h2>Year: <span id="active-year">2020</span></h2> <input id="slider" class="row svelte-dxa9p6" type="range" min="2020" max="2023" step="1" value="2020"></div> <div id="trend-graph" data-svelte-h="svelte-kysem8">Hover over the map to see the numbers. Click the census tract to see the trend.</div></div> </div> 
+			
+			<script>
+				{
+					__sveltekit_rdfb14 = {
+						base: new URL(".", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					const data = [null,null];
+
+					Promise.all([
+						import("./app/immutable/entry/start.Ds8nO0c1.js"),
+						import("./app/immutable/entry/app.DdBB2P9v.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 3],
+							data,
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>

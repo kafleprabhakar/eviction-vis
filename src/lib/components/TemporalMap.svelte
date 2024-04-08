@@ -161,14 +161,14 @@
         // Load GeoJSON data
         map.on('load', () => {
             // Add the GeoJSON data to the map
-            d3.json('src/datasets/Metro_Boston_Census_Tracts.geojson').then(geojsonData => {
+            d3.json('/datasets/Metro_Boston_Census_Tracts.geojson').then(geojsonData => {
                 map.addSource('census-tracts', {
                     type: 'geojson',
                     data: geojsonData,
                     promoteId: 'geoid'
                 });
                 // Load CSV data
-                d3.csv('src/datasets/evictions.csv').then(csvData => {
+                d3.csv('/datasets/evictions.csv').then(csvData => {
                     // let max_evictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
                     // let min_evictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
                     let max_evictions = 0;

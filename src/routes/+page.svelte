@@ -113,7 +113,6 @@
 	onDestroy(() => {
 		// map.remove();
 	});
-
 </script>
 
 <!-- html starts here -->

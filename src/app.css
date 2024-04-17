@@ -1,0 +1,24 @@
+body{
+    color: #403E3A;
+    background-color: #F8F7F5;
+    font-family: "Hind Siliguri", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.5rem;
+}
+
+h1, h2, h3{
+    color: #ED5701;
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: .05rem;
+}
+
+h1{
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 3rem;
+}

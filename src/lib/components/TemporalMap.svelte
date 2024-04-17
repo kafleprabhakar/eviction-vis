@@ -427,6 +427,7 @@
     #legend-label {
         display: flex;
         justify-content: space-between;
+        font-size:1.25rem;
     }
 
     #time-slider input {
@@ -447,6 +448,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 8px;
+      font-size:1.25rem;
     }
 
     .legend-color {
@@ -457,5 +459,14 @@
 
     .legend-label {
       font-size: 14px;
+    }
+    #trend-graph {
+        font-size:1.2rem;
+    }
+    label {
+        font-size:1.2rem;
+    }
+    h2{
+        font-size:2rem;
     }
   </style>

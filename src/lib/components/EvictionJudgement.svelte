@@ -1,8 +1,15 @@
-<div class="chart"></div>
+<div class="chart-container step">
+    <div class="chart" id="eviction-judgement"></div>
+</div>
 
 <script lang="ts">
     import { onMount } from 'svelte';
+    import scrollama from "scrollama";
     import * as d3 from 'd3';
+
+    var svg, x, y;
+    const numCols = 40;
+    var final_data;
 
     var drawGraph = function(){
 
@@ -15,15 +22,15 @@
         var twitterFillActive = "#adf7b6";
         var svgBackgroundColor = '#264653';
 
-        const width = 500;
-        const height = 500;
+        const width = 800;
+        const height = 900;
 
         //create an svg with width and height
-        var svg = d3.select('.chart')
+        svg = d3.select('#eviction-judgement')
             .append('svg')
             .attr("width", width)
-            .attr("height", height)
-            .style('background-color', svgBackgroundColor);
+            .attr("height", height);
+            // .style('background-color', svgBackgroundColor);
 
         /* 
             this is the twitter icon path definition that we are using instead of circles.
@@ -65,48 +72,79 @@
             });
 
             const colors = {
-                '0': 'blue',
+                '0': 'steelblue',
                 '1': 'red',
                 '2': 'green',
-                '3': 'yellow'
+                '3': 'orange'
             };
-            const getColor = function(d){
-                // loop over cumulitiveData
-                for (let key in cumulitiveData){
-                    if (d < cumulitiveData[key]){
-                        return colors[key];
-                    }
+            const getColor = function(d, i){
+                if (d.hasOwnProperty('judge_cat')){
+                    return colors[d.judge_cat];
                 }
+
+                // // loop over cumulitiveData
+                // for (let key in cumulitiveData){
+                //     if (d < cumulitiveData[key]){
+                //         return colors[key];
+                //     }
+                // }
                 return 'brown';
             }
 
             //10 rows and 10 columns 
-            var numCols = 20;
             var numRows = Math.ceil(cumulativeFrequency/numCols);
 
             //x and y axis scales
-            var y = d3.scaleBand()
-                .range([0,350])
-                .domain(d3.range(numRows));
+            y = d3.scaleBand()
+                .range([0,height - 150])
+                .domain(d3.range(numRows * 2));
 
-            var x = d3.scaleBand()
-                .range([0, 200])
-                .domain(d3.range(numCols));
+            x = d3.scaleBand()
+                .range([0, width - 150])
+                .domain(d3.range(numCols + 1));
 
             //the data is just an array of numbers for each cell in the grid
-            var nums = d3.range(cumulativeFrequency);
+            final_data = [];
+            var corp_idx = 0;
+            var non_corp_idx = 0;
+            data.sort(function(a, b){
+                return a.is_ptf_corp.localeCompare(b.is_ptf_corp); // First sort by corp ownership status
+            });
+            data.sort(function(a, b){
+                return a.judge_cat.localeCompare(b.judge_cat); // Final sort by judgement type
+            });
+            data.forEach(function(d){
+                for (var i = 0; i < parseInt(d.count); i++){
+                    final_data.push({
+                        "judge_cat": parseInt(d.judge_cat),
+                        "def_att": d.def_att,
+                        "is_ptf_corp": d.is_ptf_corp,
+                        "corp_non_corp_idx": d.is_ptf_corp == 'True' ? corp_idx : non_corp_idx
+                    });
+                    if (d.is_ptf_corp == 'True'){
+                        corp_idx++;
+                    } else {
+                        non_corp_idx++;
+                    }
+                }
+            });
+
+            // final_data.sort(function(a, b){
+            //     return a.judge_cat - b.judge_cat;
+            // });
 
             //container to hold the grid
             var container = svg.append("g")
                 .attr("transform", "translate(120,120)");
+            console.log({final_data});
 
             container.selectAll("use")
-                    .data(nums)
+                    .data(final_data)
                     .enter().append("use")
                     .attr("xlink:href", "#personIcon")
-                    .attr("id", function(d){return "id"+d;})
-                    .attr('x', function(d){return x(d%numCols);})
-                    .attr('y', function(d){return y(Math.floor(d/numCols));})
+                    .attr("id", function(d, i){return "id"+i;})
+                    .attr('x', function(d, i){return x(i%numCols);})
+                    .attr('y', function(d, i){return y(Math.floor(i/numCols));})
                     .attr('fill', getColor);
                     // .style('stroke', 'black');
         });
@@ -115,5 +153,94 @@
 
     onMount(() => {
         drawGraph();
+        const scroller = scrollama();
+        scroller
+            .setup({
+                step: ".step",
+                progress: true,
+            })
+            .onStepEnter((response) => {
+                // { element, index, direction }
+                console.log({response});
+                console.log(svg.selectAll("use"));
+                if (final_data === undefined){
+                    return;
+                }
+                var corp_idx = 0;
+                var non_corp_idx = 0;
+                const non_corp_offset = 21;
+                var numCols = 20;
+                // svg.selectAll("use")
+                //     .data(final_data)
+                //     .join('use')
+                //     .transition()
+                //     .delay(function(d, i){return(i*3)})
+                //     .duration(2000)
+                //     .attr("x", function (d, i) {
+                //         var row = d.corp_non_corp_idx % numCols;
+                //         if (d.is_ptf_corp == 'False'){
+                //             row = non_corp_offset + row;
+                //         }
+                //         return x(row);
+                //     })
+                //     .attr("y", function (d, i) {
+                //         return y(Math.floor(d.corp_non_corp_idx/numCols));
+                //     });
+            })
+            .onStepProgress((response) => {
+                // { element, index, progress }
+                console.log(response);
+                if (final_data === undefined){
+                    return;
+                }
+                if (response.progress > 0.4) {
+                    const non_corp_offset = 21;
+                    var numCols = 20;
+                    svg.selectAll("use")
+                        .data(final_data)
+                        .join('use')
+                        .transition()
+                        .delay(function(d, i){return(i*3)})
+                        .duration(2000)
+                        .attr("x", function (d, i) {
+                            var row = d.corp_non_corp_idx % numCols;
+                            if (d.is_ptf_corp == 'False'){
+                                row = non_corp_offset + row;
+                            }
+                            return x(row);
+                        })
+                        .attr("y", function (d, i) {
+                            return y(Math.floor(d.corp_non_corp_idx/numCols));
+                        });
+                } else {
+                    var numCols = 40;
+                    svg.selectAll("use")
+                        .data(final_data)
+                        .join('use')
+                        .transition()
+                        .delay(function(d, i){return(i*3)})
+                        .duration(2000)
+                        .attr('x', function(d, i){return x(i%numCols);})
+                        .attr('y', function(d, i){return y(Math.floor(i/numCols));})
+                }
+            })
+            .onStepExit((response) => {
+                // { element, index, direction }
+                
+            });
     });
 </script>
+
+<style>
+    .chart-container {
+        display: block;
+        height: 1600px;
+        position: relative;
+    }
+
+    #eviction-judgement {
+        position: sticky;
+        top: 0;
+        left: 0;
+    }
+</style>

@@ -1,25 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hover Effect</title>
+<script>
+    import { onMount } from 'svelte';
+  
+    let infoSectionOpacity = 1;
+    let leftBlockOpacity = 0;
+    let mapImageOpacity = 0;
+    let rightBlockOpacity = 0;
+    let containersOpacity = 0;
+    let returnToTopVisible = false;
+
+    function handleMouseEnter(event) {
+    event.currentTarget.querySelector('.text').style.display = 'block';
+  }
+
+  function handleMouseLeave(event) {
+    event.currentTarget.querySelector('.text').style.display = 'none';
+  }
+
+  
+    function handleScroll() {
+      const scrollPosition = window.scrollY;
+      infoSectionOpacity = scrollPosition > 200 ? 0 : 1;
+      leftBlockOpacity = scrollPosition > 200 ? 1 : 0;
+      mapImageOpacity = scrollPosition > 200 ? 1 : 0;
+      rightBlockOpacity = scrollPosition > 200 ? 1 : 0;
+      containersOpacity = scrollPosition > 200 ? 1 : 0;
+      returnToTopVisible = scrollPosition > 200;
+    }
+  
+    function returnToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  
+    onMount(() => {
+        window.addEventListener('scroll', handleScroll);
+        // window.addEventListener('mouseenter', handleMouseEnter);
+        // window.addEventListener('mouseleave', handleMouseLeave);
+        handleScroll();
+        // handleMouseEnter();
+        // handleMouseLeave();
+
+        const containers = document.querySelectorAll('.container');
+    containers.forEach(container => {
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+    });
+
+    // Clean up event listeners on component unmount
+    return () => {
+      containers.forEach(container => {
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
+    });
+  
+  </script>
+  
 <style>
-    html, body {
-        height: 100%;
-        overflow: auto; /* Allow scrolling */
-    }
-    header{
-        text-align: center;
-        padding: 20px 0;
-    }
-    header h1{
-        color: #ED5701;
-    }
     div.container {
         position: absolute;
         display: inline-block;
-        opacity: 0; /* Start with opacity 0 */
+        opacity: var(--containersOpacity); /* Start with opacity 0 */
         transition: opacity 0.5s ease;
         /* top: 50%; /* Initially center vertically */
         /* left: 50%;  */ 
@@ -40,13 +81,13 @@
         transform: translateY(-50%);
         padding: 10px;
         background-color: #FEB64A;
-        font-family: Arial, sans-serif; 
         font-weight: bold;
         font-size: 14px;
         text-align: left;
         line-height: 1.5;
-        z-index: 999;
+        z-index: 999; 
     }
+
     .text-container {
         display: flex;
         align-items: center;
@@ -55,69 +96,44 @@
         margin-right: 10px;
     }
     .left-block {
-        position: absolute;
-        top: 650px;
-        left: 75px;
-        width: 400px; /* Adjust the width as needed */
-        height: 360; /* Make the block take up the full height of the viewport */
+        /* position: absolute; */
+
+        width: 25%; /* Adjust the width as needed */
         background-color: #072B69;
         color: white;
-        padding: 20px;
+        padding: .8rem 1.5rem;
         text-align: center;
         box-sizing: border-box; /* Include padding in the width */
-        font-size: 25px;
+        font-size: 1.7rem;
         font-weight: bold; /* Make the text bold */
-        font-family: Arial, sans-serif; 
         line-height: 1.5; /* Increase line height */
-        opacity: 0; /* Start with opacity 0 */
+        opacity: var(--leftBlockOpacity); /* Start with opacity 0 */
         transition: opacity 0.5s ease;
+        margin-left: 5rem;
         
     }
     .mapimage{
-        position: absolute;
+        /* position: absolute; */
         width: 400px;
         height: 300px;
         border: 1px solid #ccc;
-        top: 1000px;
-        left: 800px;
-        opacity: 0; /* Start with opacity 0 */
+        opacity: var(--mapImageOpacity); /* Start with opacity 0 */
         transition: opacity 0.5s ease;
-
-
+        margin: 5rem 0; 
+        margin-left: calc(100vw - 750px);
     }
-    .right-block {
-        position: absolute;
-        top: 1400px;
-        left: 50px;
-        width: 400px; /* Adjust the width as needed */
-        height: 360; /* Make the block take up the full height of the viewport */
-        background-color: #072B69;
-        color: white;
-        padding: 20px;
-        text-align: center;
-        box-sizing: border-box; /* Include padding in the width */
-        font-size: 30px;
-        font-weight: bold; /* Make the text bold */
-        font-family: Arial, sans-serif; 
-        line-height: 2; /* Increase line height */
-        opacity: 0; /* Start with opacity 0 */
-        transition: opacity 0.5s ease;
-        
-    }
-    /* .scrollhold{
-        position:absolute;
-        top: 1400px;
-        left:1px;
-        
-    } */
+
     .info {
-        position: absolute;
-        width: 800px;
-        left: 300px;
-        opacity: 1; /* Start with opacity 1 */
+        display: flex;
+        text-align: center;
+        align-self: center;
+        width: 75%;
+        margin-bottom: 8rem;
+        opacity: var(--infoSectionOpacity); /* Start with opacity 1 */
         transition: opacity 0.3s ease; /* Add transition for opacity */
     }
-        #returnToTopBtn {
+
+    #returnToTopBtn {
         position: fixed;
         bottom: 20px;
         left: 20px;
@@ -134,101 +150,105 @@
     #returnToTopBtn:hover {
         background-color: #FF784E;
     }
-</style>
-</head>
-<body>
 
-<div class="info">
+    .all-blocks{
+        display: flex;
+        flex-direction: column;
+        transition: opacity 0.5s ease;
+    }
+</style>
+
+<!-- <div class="info" style="opacity:{infoSectionOpacity}"> -->
+
+<div class="info" style="opacity:{infoSectionOpacity}">
     <p>
         Boston is one of the most expensive places to live in the United States. With the second highest average monthly rent index in the entire country, a third of renters pay more than 30 percent of their income on housing costs. Any change in income including rent increase, a medical bill or a loss of a job can cause a low-income person to fall behind on payment. Those who can no longer keep up with rent are physically removed or forced to leave their own homes. Hover over the orange icons to hear their stories.
     </p>
 </div>
-<!-- <div class = "scrollhold">
-    <p>
-        hi
-    </p>
-</div> -->
-<div class="left-block">
-    <p>Between 2010 and 2019, property owners filed more than 50,000 evictions in Boston Housing Court</p>
-</div>
 
-<!-- map -->
-<img class ="mapimage" src="images/bostonMap.png" style = "width: 40%" alt="Boston Map">
+<div class='all-blocks' style="opacity:{leftBlockOpacity}" >
 
-<!-- All blanks -->
-<div class="container" style="top: 605px; left: 1225px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 820px; left: 1300px;" >
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px">
-</div>
-<div class="container" style="top: 620px; left: 830px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 830px; left: 730px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 1330px; left: 1230px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 1600px; left: 530px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 950px; left: 200px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 1280px; left: 600px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 1150px; left: 300px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
-<div class="container" style="top: 1500px; left: 1050px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-</div>
+    <div class="left-block" >
+        <p>Between 2010 and 2019, property owners filed more than 50,000 evictions in Boston Housing Court</p>
+    </div>
 
-<div class="container" style="top: 750px; left: 1050px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
-    <div class="text" style="right: calc(100% + 10px); width: 400px;">
-        <div class="text-container">
-            <img src="images/domingo.png" alt="Hover Person" style="width: 200px;">
-            <p>"Fannie Mae took over my [bank] account, and sold my house to investors, who sold it to a private company. Now, alone, I’m facing eviction. This ordeal has made me suffer more than you can possibly imagine."</p>
+    <!-- map -->
+    <img class ="mapimage" src="images/bostonMap.png" style = "width: 40%" alt="Boston Map">
+
+    <!-- All blanks -->
+    <div class="container" style="top: 605px; left: 1225px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 820px; left: 1300px;" >
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px">
+    </div>
+    <div class="container" style="top: 620px; left: 830px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 830px; left: 730px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 1330px; left: 1230px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 1600px; left: 530px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 950px; left: 200px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 1280px; left: 600px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 1150px; left: 300px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 1500px; left: 1050px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+
+    <div class="container" style="top: 750px; left: 1050px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+        <div class="text" style="right: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <img src="images/domingo.png" alt="Hover Person" style="width: 200px;">
+                <p>"Fannie Mae took over my [bank] account, and sold my house to investors, who sold it to a private company. Now, alone, I’m facing eviction. This ordeal has made me suffer more than you can possibly imagine."</p>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container" style="top: 1000px; left: 450px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
-    <div class="text" style="left: calc(100% + 10px); width: 400px;">
-        <div class="text-container">
-            <img src="images/margarita.png" alt="Hover Person" style="width: 200px;">
-            <p>"The first time I was evicted, I was given only a week to leave. I am no young lady, but I could not afford anything but to do the moving alone. I worried about the safety of my grandson, who lived with me."</p>
+    <div class="container" style="top: 1000px; left: 450px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+        <div class="text" style="left: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <img src="images/margarita.png" alt="Hover Person" style="width: 200px;">
+                <p>"The first time I was evicted, I was given only a week to leave. I am no young lady, but I could not afford anything but to do the moving alone. I worried about the safety of my grandson, who lived with me."</p>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container" style="top: 1400px; left: 850px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
-    <div class="text" style="right: calc(100% + 10px); width: 400px;">
-        <div class="text-container">
-            <img src="images/dora.png" alt="Hover Person" style="width: 200px;">
-            <p>"A little over a year ago, all six families living in my building were given eviction notices. We were given 30 days to leave. I felt lost and scared."</p>
+    <div class="container" style="top: 1400px; left: 850px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+        <div class="text" style="right: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <img src="images/dora.png" alt="Hover Person" style="width: 200px;">
+                <p>"A little over a year ago, all six families living in my building were given eviction notices. We were given 30 days to leave. I felt lost and scared."</p>
+            </div>
         </div>
     </div>
+
+    <div class = "left-block">
+        <p>SINCE @xxxxxx HAVE BEEN AFFECTED</p>
+    </div>
+
 </div>
 
-<div class = "right-block">
-    <p>SINCE @xxxxxx HAVE BEEN AFFECTED</p>
-</div>
 <button id="returnToTopBtn">Return to Top</button>
 
  
-
 <!-- Add more container and image pairs as needed -->
 
-<script>
-
-
+<!-- <script>
     document.querySelectorAll('.container').forEach(container => {
         const text = container.querySelector('.text');
 
@@ -291,11 +311,6 @@
             }
         }
     });
-
-
     
-</script>
+</script> -->
 
-
-</body>
-</html>

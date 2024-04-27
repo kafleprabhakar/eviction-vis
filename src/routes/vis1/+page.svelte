@@ -1,3 +1,9 @@
+<script>
+
+    import { style } from "d3";
+
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -137,7 +143,9 @@
 </style>
 </head>
 <body>
-
+<header>
+    <h1>Evictions in Boston</h1>
+</header>
 <div class="info">
     <p>
         Boston is one of the most expensive places to live in the United States. With the second highest average monthly rent index in the entire country, a third of renters pay more than 30 percent of their income on housing costs. Any change in income including rent increase, a medical bill or a loss of a job can cause a low-income person to fall behind on payment. Those who can no longer keep up with rent are physically removed or forced to leave their own homes. Hover over the orange icons to hear their stories.
@@ -157,61 +165,61 @@
 
 <!-- All blanks -->
 <div class="container" style="top: 605px; left: 1225px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 820px; left: 1300px;" >
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px">
 </div>
 <div class="container" style="top: 620px; left: 830px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 830px; left: 730px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 1330px; left: 1230px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 1600px; left: 530px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 950px; left: 200px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 1280px; left: 600px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 1150px; left: 300px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 <div class="container" style="top: 1500px; left: 1050px;">
-    <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <img class="image" src="images/clear.png" alt="Image" style="width: 50px;">
 </div>
 
 <div class="container" style="top: 750px; left: 1050px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <img class="image" src="images/orange.png" alt="Image" style="width: 50px;">
     <div class="text" style="right: calc(100% + 10px); width: 400px;">
         <div class="text-container">
-            <img src="images/domingo.png" alt="Hover Person" style="width: 200px;">
+            <img src="images/domingo.png" alt="Tooltip Image" style="width: 200px;">
             <p>"Fannie Mae took over my [bank] account, and sold my house to investors, who sold it to a private company. Now, alone, I’m facing eviction. This ordeal has made me suffer more than you can possibly imagine."</p>
         </div>
     </div>
 </div>
 
 <div class="container" style="top: 1000px; left: 450px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <img class="image" src="images/orange.png" alt="Image" style="width: 50px;">
     <div class="text" style="left: calc(100% + 10px); width: 400px;">
         <div class="text-container">
-            <img src="images/margarita.png" alt="Hover Person" style="width: 200px;">
+            <img src="images/margarita.png" alt="Tooltip Image" style="width: 200px;">
             <p>"The first time I was evicted, I was given only a week to leave. I am no young lady, but I could not afford anything but to do the moving alone. I worried about the safety of my grandson, who lived with me."</p>
         </div>
     </div>
 </div>
 
 <div class="container" style="top: 1400px; left: 850px;">
-    <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <img class="image" src="images/orange.png" alt="Image" style="width: 50px;">
     <div class="text" style="right: calc(100% + 10px); width: 400px;">
         <div class="text-container">
-            <img src="images/dora.png" alt="Hover Person" style="width: 200px;">
+            <img src="images/dora.png" alt="Tooltip Image" style="width: 200px;">
             <p>"A little over a year ago, all six families living in my building were given eviction notices. We were given 30 days to leave. I felt lost and scared."</p>
         </div>
     </div>

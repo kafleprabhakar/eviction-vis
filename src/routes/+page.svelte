@@ -8,7 +8,6 @@
 </script>
 
 <div class='everything'>
-
 	<!-- <div class = "scrollhold">
 		<p>
 			hi
@@ -16,10 +15,11 @@
 	</div> -->
 
 	<!-- VIS 1 -->
-	<div class='vis-section'>
+	<div class='vis-section v1'>
 		<header class='header-title'>
 			<h1 class='first-title'>EVICTIONS IN BOSTON</h1>
-		</header>		
+		</header>
+		<V1/>		
 	</div>
 
 
@@ -87,6 +87,10 @@
 
 	.header-title{
 		align-self: center;
+	}
+
+	.v1 {
+		margin-bottom: 15rem;
 	}
 
 	.vis-section {

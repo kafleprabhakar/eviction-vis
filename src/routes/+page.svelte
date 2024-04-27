@@ -1,208 +1,141 @@
-<!-- js starts here -->
-<script>
-	import { onMount, onDestroy } from "svelte";
-	import * as mapbox from 'mapbox-gl';
-
-	let map;
-	let mapContainer;
-	let lng, lat, zoom;
-
-	lng = -74.0059;
-	lat = 40.7128;
-	zoom = 12;
-
-	onMount(() => {
-  	const initialState = { lng: lng, lat: lat, zoom: zoom };
-
-  	map = new mapbox.Map({
-		container: mapContainer,
-		accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
-		style: `mapbox://styles/mapbox/light-v11`,
-		center: [initialState.lng, initialState.lat],
-		zoom: initialState.zoom,
-		});
-
-	map.on('load', () => {
-        let filterHour = ['==', ['number', ['get', 'Hour']], 12];
-        let filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
-
-        map.addLayer({
-          id: 'collisions',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: 'src/datasets/collisions1601.geojson' // replace this with the url of your own geojson
-          },
-          paint: {
-            'circle-radius': [
-              'interpolate',
-              ['linear'],
-              ['number', ['get', 'Casualty']],
-              0,
-              4,
-              5,
-              24
-            ],
-            'circle-color': [
-              'interpolate',
-              ['linear'],
-              ['number', ['get', 'Casualty']],
-              0,
-              '#2DC4B2',
-              1,
-              '#3BB3C3',
-              2,
-              '#669EC4',
-              3,
-              '#8B88B6',
-              4,
-              '#A2719B',
-              5,
-              '#AA5E79'
-            ],
-            'circle-opacity': 0.8
-          },
-          'filter': ['all', filterHour, filterDay]
-        });
-
-	// update hour filter when the slider is dragged
-	document.getElementById('slider').addEventListener('input', (event) => {
-		const hour = parseInt(event.target.value);
-		// update the map
-		filterHour = ['==', ['number', ['get', 'Hour']], hour];
-		map.setFilter('collisions', ['all', filterHour, filterDay]);
-
-		// converting 0-23 hour to AMPM format
-		const ampm = hour >= 12 ? 'PM' : 'AM';
-		const hour12 = hour % 12 ? hour % 12 : 12;
-
-		// update text in the UI
-		document.getElementById('active-hour').innerText = hour12 + ampm;
-	});
-
-    document.getElementById('filters').addEventListener('change', (event) => {
-		const day = event.target.value;
-		// update the map filter
-		if (day === 'all') {
-			filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
-		} else if (day === 'weekday') {
-			filterDay = [
-			'match',
-			['get', 'Day'],
-			['Sat', 'Sun'],
-			false,
-			true
-			];
-		} else if (day === 'weekend') {
-			filterDay = [
-			'match',
-			['get', 'Day'],
-			['Sat', 'Sun'],
-			true,
-			false
-			];
-		} else {
-			console.error('error');
-		}
-		map.setFilter('collisions', ['all', filterHour, filterDay]);
-          });
-      });
-		
-	});
-
-	onDestroy(() => {
-		// map.remove();
-	});
+<script lang="ts">
+    import V1 from "$lib/components/V1.svelte";
+	import TemporalMap from '$lib/components/TemporalMap.svelte';
+	import CorpLineChart from '$lib/components/CorpLineChart.svelte';
+    import EvictionJudgement from '$lib/components/EvictionJudgement.svelte';
+	import V4 from "$lib/components/V4.svelte";
+	import V5Map from "$lib/components/V5Map.svelte";
 </script>
 
-<!-- html starts here -->
-<h1>Visualization Proof of Concept</h1>
-<div class="map-wrap">
-	<div class="map" bind:this={mapContainer} />
+<div class='everything'>
+
+	<!-- <div class = "scrollhold">
+		<p>
+			hi
+		</p>
+	</div> -->
+
+	<!-- VIS 1 -->
+	<div class='vis-section'>
+		<header class='header-title'>
+			<h1 class='first-title'>EVICTIONS IN BOSTON</h1>
+		</header>		
+	</div>
+
+
+	<!-- VIS 2 -->
+	<div class='vis-section'>
+		<h2 class='header-title'>Eviction Rates Over Time</h2>
+		<TemporalMap/>
+	</div>
+
+
+	<div class='vis-spacer1'>
+		<h2 class='who'>BUT WHO IS ISSUING THESE EVICTIONS?</h2>
+	</div>
+
+	<!-- VIS 3 -->
+	<div class='vis-section'>
+		<h2 class='header-title'>Corporate Evictions</h2>
+		<CorpLineChart />
+		<EvictionJudgement />
+	</div>
+
+	<div class='vis-spacer2'>
+		<h3 class='toWho'>Who are these Evictions Impacting?</h3>
+		<p> Despite Boston's reputation for diversity and its plethora of vibrant
+			neighborhoods, there exists a troubling pattern of inequality, particularly
+			concerning eviction rates among minority-heavy communities. While the city
+			boasts a rich tapestry of cultures and identities, certain neighborhoods
+			with higher minority populations often bear the brunt of eviction crises
+			than those that boost a higher white or asian population. This disparity
+			underscores systemic issues of housing discrimination, economic disparity,
+			and unequal access to resources. Despite efforts to address these
+			disparities, such as through community outreach programs and policy
+			initiatives, the persistent prevalence of evictions in minority-heavy
+			neighborhoods highlights the urgent need for comprehensive and equitable
+			solutions to ensure fair and just housing opportunities for all residents of
+			Boston.</p>
+	</div>
+
+	<!-- VIS 4 -->
+	<div class='vis-section'>
+		<V4/>
+	</div>
+
+
+	<!-- VIS 5 -->
+	<div class='vis-section'>
+		<h2 class='header-title'>What if it was you?</h2>
+		<V5Map/>
+	</div>
 </div>
 
-<div id="console">
-	<h1>Motor vehicle collisions</h1>
-	<p>Data:
-		<a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Motor-Vehicle-Collisions/h9gi-nx95">
-		Motor vehicle collision injuries and death
-		</a>
-		in NYC, Jan 2016
-	</p>
-		
-	<div class="session">
-		<h2>Casualty</h2>
-		<div class="row colors"></div>
-		<div class="row labels">
-			<div class="label">0</div>
-			<div class="label">1</div>
-			<div class="label">2</div>
-			<div class="label">3</div>
-			<div class="label">4</div>
-			<div class="label">5+</div>
-		</div>
-	</div>
-
-	<div class="session">
-		<h2>Hour: <label id="active-hour">12PM</label></h2>
-		<input
-		id="slider"
-		class="row"
-		type="range"
-		min="0"
-		max="23"
-		step="1"
-		value="12"
-		/>
-	</div>
-
-	<div class="session">
-		<h2>Day of the week</h2>
-		<div class="row" id="filters">
-		<input id="all" type="radio" name="toggle" value="all" checked="checked" />
-		<label for="all">All</label>
-		<input id="weekday" type="radio" name="toggle" value="weekday" />
-		<label for="weekday">Weekday</label>
-		<input id="weekend" type="radio" name="toggle" value="weekend" />
-		<label for="weekend">Weekend</label>
-		</div>
-	</div>
+<div class='footer'>
+	<p>Acknowledgements and Datasets</p>
 </div>
 
-<!-- css starts here -->
 <style>
-	.map {
-		position: absolute;
-		width: 100%;
-		height: 100%;
+	.everything {
+		display: flex;
+		flex-direction: column;
 	}
 
-	#console {
-		position: absolute;
-		width: 240px;
-		margin: 10px;
-		padding: 10px 20px;
-		background-color: white;
+	.first-title{
+		letter-spacing:0.2rem;
 	}
 
-	.session {
-  		margin-bottom: 20px;
+	.header-title{
+		align-self: center;
 	}
 
-	.row {
-		height: 12px;
-		width: 100%;
+	.vis-section {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
 	}
 
-	.colors {
-		background: linear-gradient(to right, #2dc4b2, #3bb3c3, #669ec4, #8b88b6, #a2719b, #aa5e79);
-		margin-bottom: 5px;
-	}
-
-	.label {
-		width: 15%;
-		display: inline-block;
+	.who {
+		align-self: center;
+		background-color: #feb64a;
+		color: #F8F7F5;
+		padding: 7rem;
+		font-size: 4rem;
 		text-align: center;
+		margin-top: 11rem;
+		margin-bottom: 11rem;
+		letter-spacing: .2rem;
+	}
+
+	.vis-spacer2 {
+		background-color: #feb64a;
+		color: #F8F7F5;
+		align-self: center;
+		display: flex;
+		flex-direction: column;
+		padding: 5.5rem;
+		/* padding-right: 10rem;
+		padding-left: 10rem; */
+		margin-bottom: 5rem;
+	}
+
+	.toWho {
+		color: #F8F7F5;
+		margin: 0.5rem;
+		font-size: 3rem;
+	}
+
+	.footer {
+		background-color: #B7BBC2;
+		color: #F8F7F5;
+		height: 25vh;
+		width:100%;
+		position:absolute;
+		left:0; 
+		overflow-x: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 </style>

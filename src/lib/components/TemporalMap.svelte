@@ -1,4 +1,3 @@
-
 <div id="vis-container">
     <div id="map-container">
         <div id="map" class="map"></div>
@@ -39,7 +38,6 @@
     import { onMount, onDestroy } from "svelte";
 	import * as mapbox from 'mapbox-gl';
     import * as d3 from 'd3';
-    // import type { TemporalMap } from "./temporalMap.type";
 
     const lowColor = '#f7d654';
     const highColor = '#e64302';
@@ -387,7 +385,7 @@
     #vis-container {
         position: relative;
         width: 100%;
-        height: 100vh;
+        height: 85vh;
         margin: -8px; /* Offset the 8px margin added by default in body */
         display: flex;
     }
@@ -400,7 +398,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 0;
+      left: 1rem;
       right: 0;
     }
 
@@ -414,10 +412,10 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .map-overlay#legend {
-        /* top: 16px;
-        right: 16px; */
-    }
+    /* .map-overlay#legend {
+        top: 16px;
+        right: 16px;
+    } */
 
     #legend-color {
         height: 20px;
@@ -434,7 +432,7 @@
         width: 100%;
     }
     
-    .map-legend {
+    /* .map-legend {
       position: absolute;
       bottom: 40px;
       right: 40px;
@@ -442,7 +440,7 @@
       padding: 16px;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    } */
 
     .legend-item {
       display: flex;
@@ -451,7 +449,7 @@
       font-size:1.25rem;
     }
 
-    .legend-color {
+    /* .legend-color {
       width: 20px;
       height: 20px;
       margin-right: 8px;
@@ -459,7 +457,7 @@
 
     .legend-label {
       font-size: 14px;
-    }
+    } */
     #trend-graph {
         font-size:1.2rem;
     }

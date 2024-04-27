@@ -1,3 +1,7 @@
+<div class='v3-words'>
+    <h3>Corporate vs Private Eviction Distribution</h3>
+</div>
+
 <div class="chart-container step">
     <div class="chart" id="eviction-judgement"></div>
 </div>
@@ -7,11 +11,11 @@
     import scrollama from "scrollama";
     import * as d3 from 'd3';
 
-    var svg, x, y;
+    let svg, x, y;
     const numCols = 40;
-    var final_data;
+    let final_data;
 
-    var drawGraph = function(){
+    let drawGraph = function(){
 
         //number of icons to color in to visualize percent
         var percentNumber = 92;
@@ -193,7 +197,7 @@
                 if (final_data === undefined){
                     return;
                 }
-                if (response.progress > 0.4) {
+                if (response.progress > 0.3) {
                     const non_corp_offset = 21;
                     var numCols = 20;
                     svg.selectAll("use")
@@ -233,9 +237,15 @@
 
 <style>
     .chart-container {
-        display: block;
-        height: 1600px;
+        display: flex;
+        /* height: 1600px; */
         position: relative;
+        justify-content: center;
+    }
+
+    .v3-words {
+        display: flex;
+        justify-content: center;    
     }
 
     #eviction-judgement {

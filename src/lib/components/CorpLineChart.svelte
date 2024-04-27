@@ -1,4 +1,16 @@
-<div class="chart"></div>
+<div class='v3-container'>
+    <div class="chart"></div>
+</div>
+
+<style>
+    .v3-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 1rem;
+        padding-bottom: 8rem
+    }
+</style>
 
 <script lang="ts">
     import { onMount } from 'svelte';
@@ -10,8 +22,8 @@
     import * as d3 from 'd3';
 
     const margin = { top: 20, right: 30, bottom: 30, left: 40 };
-    const width = 600 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const width = 1000 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
 
     onMount(() => {
         d3.csv('/datasets/corp_rates.csv').then(data => {

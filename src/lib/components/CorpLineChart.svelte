@@ -22,11 +22,15 @@
                 .attr('height', height + margin.top + margin.bottom)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
+            
+            svg.append('rect')
+                .attr('width', width).attr('height', height)
+                .attr('fill', 'blue').attr('fill-opacity', 0.00);
 
-                data.forEach(d => {
-                    // Convert the "year" column to JavaScript Date objects
-                    d.year = new Date(+d.year, 0); // Assuming "year" is stored as integer
-                });
+            data.forEach(d => {
+                // Convert the "year" column to JavaScript Date objects
+                d.year = new Date(+d.year, 0); // Assuming "year" is stored as integer
+            });
             
             const x = scaleTime()
                 // .domain(data.map(d => d.year))
@@ -78,6 +82,66 @@
                 .attr('stroke', 'green')
                 .attr('stroke-width', 1.5)
                 .attr('d', line2);
+
+            const mouse_g = svg.append('g').classed('mouse', true).style('display', 'none');
+            const markerLine = mouse_g
+                .append('line')
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', 0)
+                .attr('y2', height - margin.top - margin.bottom)
+                .attr('stroke-width', 3)
+                .attr('stroke', 'darkviolet')
+                .attr('opacity', 1);
+                
+            const markerDot1 = mouse_g
+                .append('circle')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('r', 5)
+                .attr('fill', 'darkviolet')
+                .attr('opacity', 1);
+
+            const markerDot2 = mouse_g
+                .append('circle')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('r', 5)
+                .attr('fill', 'darkviolet')
+                .attr('opacity', 1);
+
+            const bisect = d3.bisector(d => d.year);
+            console.log({svg});
+            svg.on('mouseover', () => {
+                mouse_g.style('display', null);
+            });
+            svg.on('mousemove', (e) => {
+                const pointerCoords = d3.pointer(e);
+                const [posX, posY] = pointerCoords;
+                const date = x.invert(posX);
+                const index = bisect.center(data, date);
+                const d = data[index];
+                
+                const x_ = x(d.year);
+                const y1_ = y(d.own_rate);
+                const y2_ = y(d.eviction_share);
+                
+                markerLine
+                    .attr('x1', x_)
+                    .attr('x2', x_)
+                    .attr('y1', y1_)
+                    .attr('y2', y2_);
+                
+                markerDot1
+                    .attr('cx', x_)
+                    .attr('cy', y1_);
+                markerDot2
+                    .attr('cx', x_)
+                    .attr('cy', y2_);
+            });
+            svg.on('mouseout', () => {
+                mouse_g.style('display', 'none');
+            });
 
             // Legend
             const legend = svg.append('g')

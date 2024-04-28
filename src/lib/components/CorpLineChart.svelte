@@ -21,7 +21,7 @@
     import { timeParse } from 'd3-time-format';
     import * as d3 from 'd3';
 
-    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
     const width = 1000 - margin.left - margin.right;
     const height = 600 - margin.top - margin.bottom;
 
@@ -65,9 +65,22 @@
             svg.append('g')
                 .attr('transform', `translate(0,${height})`)
                 .call(xAxis);
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", width/2)
+                .attr("y", height + margin.top + 20)
+                .style("font-size", "15px")
+                .text("Year");
 
             svg.append('g')
                 .call(yAxisLeft);
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 10)
+                .attr("x", - height/6)
+                .style("font-size", "15px")
+                .text("Percentage of houses owned/evictions filed by corporations")
 
             // svg.append('g')
             //     .attr('transform', `translate(${width}, 0)`)
@@ -103,7 +116,7 @@
                 .attr('y1', 0)
                 .attr('y2', height - margin.top - margin.bottom)
                 .attr('stroke-width', 3)
-                .attr('stroke', 'darkviolet')
+                .attr('stroke', 'steelblue')
                 .attr('opacity', 1);
                 
             const markerDot1 = mouse_g
@@ -111,7 +124,7 @@
                 .attr('cx', 0)
                 .attr('cy', 0)
                 .attr('r', 5)
-                .attr('fill', 'darkviolet')
+                .attr('fill', 'steelblue')
                 .attr('opacity', 1);
 
             const markerDot2 = mouse_g
@@ -119,7 +132,7 @@
                 .attr('cx', 0)
                 .attr('cy', 0)
                 .attr('r', 5)
-                .attr('fill', 'darkviolet')
+                .attr('fill', 'steelblue')
                 .attr('opacity', 1);
 
             const bisect = d3.bisector(d => d.year);

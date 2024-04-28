@@ -56,6 +56,77 @@
             .attr("d", "m60.859 13.984c0 5.9961-4.8633 10.859-10.859 10.859s-10.859-4.8633-10.859-10.859 4.8633-10.859 10.859-10.859 10.859 4.8633 10.859 10.859")
             .attr("transform", "translate(0,0) scale(.3)");
 
+        // var svg = d3.select("#my_dataviz")
+
+        const colors = {
+            'Default': 'steelblue',
+            'Charged': 'red',
+            'Dismissal': 'green',
+            'Other': 'orange'
+        };
+
+        var svgLegend = d3.select(".legend")
+            .append("svg")
+            .attr("width", 800)
+            .attr("height", 50)
+            .append("g")
+            .attr("transform", "translate(60,0)");
+
+        // Handmade legend
+        svgLegend
+            .append("use")
+            .attr("xlink:href", "#personIcon")
+            .attr('x', 0)
+            .attr('y', 10)
+            .attr('fill', colors['Default']);
+        svgLegend
+            .append("use")
+            .attr("xlink:href", "#personIcon")
+            .attr('x', 230)
+            .attr('y', 10)
+            .attr('fill', colors['Charged']);
+        svgLegend
+            .append("use")
+            .attr("xlink:href", "#personIcon")
+            .attr('x', 400)
+            .attr('y', 10)
+            .attr('fill', colors['Dismissal']);
+        svgLegend
+            .append("use")
+            .attr("xlink:href", "#personIcon")
+            .attr('x', 600)
+            .attr('y', 10)
+            .attr('fill', colors['Other']);
+        
+        svgLegend
+            .append("text")
+            .attr("x", 30)
+            .attr("y", 25)
+            .text("Defendent did not show up")
+            .style("font-size", "15px")
+            .attr("alignment-baseline","middle")
+        svgLegend
+            .append("text")
+            .attr("x", 260)
+            .attr("y", 25)
+            .text("Landlord won case")
+            .style("font-size", "15px")
+            .attr("alignment-baseline","middle")
+        svgLegend
+            .append("text")
+            .attr("x", 430)
+            .attr("y", 25)
+            .text("Defendent won case")
+            .style("font-size", "15px")
+            .attr("alignment-baseline","middle")
+        svgLegend
+            .append("text")
+            .attr("x", 630)
+            .attr("y", 25)
+            .text("Other")
+            .style("font-size", "15px")
+            .attr("alignment-baseline","middle")
+
         d3.csv('/datasets/eviction_judgement_23.csv').then(data => {
             console.log({data});
 
@@ -77,12 +148,6 @@
                 // d.cumulativeFrequency = cumulativeFrequency;
             });
 
-            const colors = {
-                'Default': 'steelblue',
-                'Charged': 'red',
-                'Dismissal': 'green',
-                'Other': 'orange'
-            };
             const getColor = function(d, i){
                 if (d.hasOwnProperty('judge_cat')){
                     return colors[d.judge_cat];
@@ -210,7 +275,7 @@
                         .data(final_data)
                         .join('use')
                         .transition()
-                        .delay(function(d, i){return(i*3)})
+                        .delay(function(d, i){return(i)})
                         .duration(2000)
                         .attr("x", function (d, i) {
                             var row;
@@ -234,7 +299,7 @@
                         .data(final_data)
                         .join('use')
                         .transition()
-                        .delay(function(d, i){return(i*3)})
+                        .delay(function(d, i){return(i)})
                         .duration(2000)
                         .attr('x', function(d, i){return x(i%numCols);})
                         .attr('y', function(d, i){return y(Math.floor(i/numCols));})
@@ -253,6 +318,7 @@
         /* height: 1600px; */
         position: relative;
         justify-content: center;
+        height: 1200px;
     }
 
     .v3-words {
@@ -264,5 +330,6 @@
         position: sticky;
         top: 0;
         left: 0;
+        height: 100vh;
     }
 </style>

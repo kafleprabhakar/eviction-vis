@@ -55,7 +55,7 @@
             //     .range([height, 0]);
 
             const y = scaleLinear()
-                .domain([0, d3.max(data, d => Math.max(d.eviction_share, d.own_rate))])
+                .domain([0, 100])
                 .range([height, 0]);
 
             const xAxis = axisBottom(x);

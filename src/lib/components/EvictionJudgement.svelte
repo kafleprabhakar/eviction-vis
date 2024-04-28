@@ -3,7 +3,9 @@
 </div>
 
 <div class="chart-container step">
-    <div class="chart" id="eviction-judgement"></div>
+    <div class="chart" id="eviction-judgement">
+        <div class="legend"></div>
+    </div>
 </div>
 
 <script lang="ts">
@@ -27,7 +29,7 @@
         var svgBackgroundColor = '#264653';
 
         const width = 800;
-        const height = 900;
+        const height = 1000;
 
         //create an svg with width and height
         svg = d3.select('#eviction-judgement')
@@ -54,7 +56,7 @@
             .attr("d", "m60.859 13.984c0 5.9961-4.8633 10.859-10.859 10.859s-10.859-4.8633-10.859-10.859 4.8633-10.859 10.859-10.859 10.859 4.8633 10.859 10.859")
             .attr("transform", "translate(0,0) scale(.3)");
 
-        d3.csv('/datasets/eviction_judgement.csv').then(data => {
+        d3.csv('/datasets/eviction_judgement_23.csv').then(data => {
             console.log({data});
 
             const grouped = d3.rollup(
@@ -76,10 +78,10 @@
             });
 
             const colors = {
-                '0': 'steelblue',
-                '1': 'red',
-                '2': 'green',
-                '3': 'orange'
+                'Default': 'steelblue',
+                'Charged': 'red',
+                'Dismissal': 'green',
+                'Other': 'orange'
             };
             const getColor = function(d, i){
                 if (d.hasOwnProperty('judge_cat')){
@@ -96,16 +98,6 @@
             }
 
             //10 rows and 10 columns 
-            var numRows = Math.ceil(cumulativeFrequency/numCols);
-
-            //x and y axis scales
-            y = d3.scaleBand()
-                .range([0,height - 150])
-                .domain(d3.range(numRows * 2));
-
-            x = d3.scaleBand()
-                .range([0, width - 150])
-                .domain(d3.range(numCols + 1));
 
             //the data is just an array of numbers for each cell in the grid
             final_data = [];
@@ -117,10 +109,11 @@
             data.sort(function(a, b){
                 return a.judge_cat.localeCompare(b.judge_cat); // Final sort by judgement type
             });
+            var totalIcons = 0;
             data.forEach(function(d){
-                for (var i = 0; i < parseInt(d.count); i++){
+                for (var i = 0; i < parseInt(d.count) / 5; i++){
                     final_data.push({
-                        "judge_cat": parseInt(d.judge_cat),
+                        "judge_cat": d.judge_cat,
                         "def_att": d.def_att,
                         "is_ptf_corp": d.is_ptf_corp,
                         "corp_non_corp_idx": d.is_ptf_corp == 'True' ? corp_idx : non_corp_idx
@@ -130,8 +123,20 @@
                     } else {
                         non_corp_idx++;
                     }
+                    totalIcons++;
                 }
             });
+
+            var numRows = Math.ceil(totalIcons/numCols);
+
+            //x and y axis scales
+            y = d3.scaleBand()
+                .range([0,height - 100])
+                .domain(d3.range(numRows + 10));
+
+            x = d3.scaleBand()
+                .range([0, width - 100])
+                .domain(d3.range(numCols + 1));
 
             // final_data.sort(function(a, b){
             //     return a.judge_cat - b.judge_cat;
@@ -139,7 +144,7 @@
 
             //container to hold the grid
             var container = svg.append("g")
-                .attr("transform", "translate(120,120)");
+                .attr("transform", "translate(60,60)");
             console.log({final_data});
 
             container.selectAll("use")
@@ -172,8 +177,7 @@
                 }
                 var corp_idx = 0;
                 var non_corp_idx = 0;
-                const non_corp_offset = 21;
-                var numCols = 20;
+                const non_corp_offset = 27;
                 // svg.selectAll("use")
                 //     .data(final_data)
                 //     .join('use')
@@ -197,8 +201,10 @@
                 if (final_data === undefined){
                     return;
                 }
-                if (response.progress > 0.3) {
-                    const non_corp_offset = 21;
+                if (response.progress > 0.4) {
+                    var numColsCorp = 25;
+                    var numColsNonCorp = 13;
+                    const non_corp_offset = 27;
                     var numCols = 20;
                     svg.selectAll("use")
                         .data(final_data)
@@ -207,14 +213,20 @@
                         .delay(function(d, i){return(i*3)})
                         .duration(2000)
                         .attr("x", function (d, i) {
-                            var row = d.corp_non_corp_idx % numCols;
+                            var row;
                             if (d.is_ptf_corp == 'False'){
-                                row = non_corp_offset + row;
+                                row = d.corp_non_corp_idx % numColsNonCorp + non_corp_offset;
+                            } else {
+                                row = d.corp_non_corp_idx % numColsCorp;
                             }
                             return x(row);
                         })
                         .attr("y", function (d, i) {
-                            return y(Math.floor(d.corp_non_corp_idx/numCols));
+                            if (d.is_ptf_corp == 'False'){
+                                return y(Math.floor(d.corp_non_corp_idx/numColsNonCorp));
+                            } else {
+                                return y(Math.floor(d.corp_non_corp_idx/numColsCorp));
+                            }
                         });
                 } else {
                     var numCols = 40;

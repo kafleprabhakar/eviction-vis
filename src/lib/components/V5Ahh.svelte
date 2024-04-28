@@ -210,16 +210,6 @@
                 }
             });
 
-            // v5map.addLayer({
-            //     'id': 'risk',
-            //     'type': 'fill',
-            //     'source': 'neighborhoods',
-            //     'paint': {
-            //         'fill-color': ['get', 'calc_color'],
-            //         'fill-opacity': .6 // Adjust opacity if needed
-            //     }
-            // });
-
             v5map.addLayer({
                 'id': 'risk',
                 'type': 'fill',
@@ -243,7 +233,6 @@
                 const highLegend = document.getElementById('v5-high-legend');
                 lowLegend!.textContent = overallMin.toFixed(2) + "%";
                 highLegend!.textContent = overallMax.toFixed(2) + "%";
-
                 // console.log(min_percent, max_percent, min_evictions, max_evictions);
             }
 
@@ -381,5 +370,6 @@
         height: 85vh; */
         margin: -8px; /* Offset the 8px margin added by default in body */
         display: flex;
+        margin-bottom: 5rem;
     }
 </style>

@@ -6,17 +6,28 @@
 	import V4 from "$lib/components/V4.svelte";
 	import V5Map from "$lib/components/V5Map.svelte";
 	import V5Ahh from "$lib/components/V5Ahh.svelte";
+
+	function scrollTo(elementId: string) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
 </script>
+<div class='sidebar'>
+    <!-- Sidebar navigation links -->
+    <ul class="sidebar-nav">
+        <li class='scroll-link'><a on:click={() => scrollTo('v1')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v2')}><svg  width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v3')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v4')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+		<li class='scroll-link'><a on:click={() => scrollTo('v5')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+    </ul>
+</div>
 
 <div class='everything'>
-	<!-- <div class = "scrollhold">
-		<p>
-			hi
-		</p>
-	</div> -->
-
 	<!-- VIS 1 -->
-	<div class='vis-section v1'>
+	<div class='vis-section v1' id="v1">
 		<header class='header-title'>
 			<h1 class='first-title'>EVICTIONS IN BOSTON</h1>
 		</header>
@@ -25,7 +36,7 @@
 
 
 	<!-- VIS 2 -->
-	<div class='vis-section'>
+	<div class='vis-section' id='v2'>
 		<h2 class='header-title'>Eviction Rates Over Time</h2>
 		<TemporalMap/>
 	</div>
@@ -36,7 +47,7 @@
 	</div>
 
 	<!-- VIS 3 -->
-	<div class='vis-section'>
+	<div class='vis-section' id="v3">
 		<h2 class='header-title'>Corporate Evictions</h2>
 		<CorpLineChart />
 		<EvictionJudgement />
@@ -60,13 +71,13 @@
 	</div>
 
 	<!-- VIS 4 -->
-	<div class='vis-section'>
+	<div class='vis-section' id="v4">
 		<V4/>
 	</div>
 
 
 	<!-- VIS 5 -->
-	<div class='vis-section'>
+	<div class='vis-section' id="v5">
 		<h2 class='header-title'>What if it was you?</h2>
 		<!-- <V5Map/> -->
 		<V5Ahh/>
@@ -82,6 +93,40 @@
 		display: flex;
 		flex-direction: column;
 	}
+
+	.scroll-circle:hover {
+		fill:#ED5701;
+		cursor: pointer;
+	}
+
+    .sidebar {
+		z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100%;
+        background-color: none;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+    }
+
+    .sidebar-nav {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* .sidebar-nav li {
+        margin-bottom: 10px;
+    } */
+
+    .sidebar-nav a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+    }
 
 	.first-title{
 		letter-spacing:0.2rem;

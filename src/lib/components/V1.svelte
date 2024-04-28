@@ -134,24 +134,6 @@
         transition: opacity 0.3s ease; /* Add transition for opacity */
     }
 
-    #returnToTopBtn {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: 999;
-        display: none; /* Initially hide the button */
-        padding: 10px 20px;
-        background-color: #ED5701;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: opacity 0.3s ease; /* Add transition for opacity */
-    }
-    #returnToTopBtn:hover {
-        background-color: #FF784E;
-    }
-
     .all-blocks{
         display: flex;
         flex-direction: column;
@@ -242,13 +224,10 @@
     </div>
 
     <div class = "left-block">
-        <p>In Boston, around 80% of evictions are reportedly filed for non-payment of rent.</p>
+        <p>In Boston, around 80% of evictions are reportedly filed for non-payment of rent</p>
     </div>
 
 </div>
-
-<button id="returnToTopBtn">Return to Top</button>
-
  
 <!-- Add more container and image pairs as needed -->
 

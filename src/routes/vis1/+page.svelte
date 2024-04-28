@@ -64,7 +64,7 @@
         position: absolute;
         top: 650px;
         left: 75px;
-        width: 400px; /* Adjust the width as needed */
+        width: 500px; /* Adjust the width as needed */
         height: 360; /* Make the block take up the full height of the viewport */
         background-color: #072B69;
         color: white;

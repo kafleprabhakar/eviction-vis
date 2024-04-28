@@ -1,5 +1,5 @@
 <!-- Input form for user to select demographic -->
-<form on:submit|preventDefault="{handleSubmitDemographic}">
+<form id='demoform' on:submit|preventDefault="{handleSubmitDemographic}">
     <label>
       Select Racial Demographic:
       <select bind:value="{selectedDemographic}">
@@ -27,7 +27,19 @@
     <button type="submit">Submit</button>
   </form>
 
-  <div id="v5map" style="width: 90%; height: 600px;"></div>
+  <div class='v5-container'>
+    <div id="v5map" style="width: 90%; height: 600px;"></div>
+    <div class="map-overlay" id="legend">
+
+        <h2>{ year }</h2>
+        <div id="legend-color"></div>
+        <div id="legend-label">
+            <div class="legend-item" id="low-legend"></div>
+            <div class="legend-item" id="high-legend"></div>
+        </div>
+
+    </div>
+</div>
 
 
 <script lang="ts">
@@ -38,101 +50,216 @@
     const lowColor = '#f7d654';
     const highColor = '#e64302';
 
+    let year = "tester";
+
     let v5map: mapboxgl.Map;
     let selectedDemographic: string = ''; // Selected demographic option
     let selectedIncome: string = ''; // Selected demographic option
     let demographicData: any; // Demographic data for selected area
     let neighborhoodDataMap: any; // Neighborhood data for Boston
     const geoJsonDataRates = { type: 'FeatureCollection', features: {}}; // GeoJSON data for Boston neighborhoods
+    const availableNeighborhoods = ['Roslindale', 'Jamaica Plain', 
+        'Roxbury', 'South End', 'Back Bay', 'East Boston', 'Charlestown',
+        'Beacon Hill', 'Fenway', 'Brighton', 'West Roxbury', 'Hyde Park', 
+        'Mattapan', 'Dorchester', 'South Boston', 'Allston'];
 
   
     // Function to fetch demographic data based on user input
-    async function fetchDemographicData(demographic: string) {
-      // Fetch data based on user input
-      // Process the data to match area codes/neighborhoods with demographic values
-      // Return formatted data
-    //   const csvData = await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv')
-        let maxVal = 0; 
-        let minVal = 100; 
+    // async function fetchDemographicData(demographic: string) :Promise<[number, number]> {
+    //   // Fetch data based on user input
+    //   // Process the data to match area codes/neighborhoods with demographic values
+    //   // Return formatted data
+    // //   const csvData = await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv')
+    //     let maxVal = 0; 
+    //     let minVal = 100; 
 
-      d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv').then(csvData => {
-        // console.log(csvData);
-        // var evictionData = csvData.find(row => row.GEOID === censusTractID);
+    //   await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv').then(csvData => {
+    //     // console.log(csvData);
+    //     // var evictionData = csvData.find(row => row.GEOID === censusTractID);
 
-        // Filter the data based on a condition
-        const filteredData = csvData.filter(function(row) {
-            // Replace "condition" with your specific filtering condition
-            return row["Neighborhood"] !== 'Boston (Total)';
-        });
+    //     // Filter the data based on a condition
+    //     const filteredData = csvData.filter(function(row) {
+    //         // Replace "condition" with your specific filtering condition
+    //         return row["Neighborhood"] !== 'Boston (Total)';
+    //     });
 
+
+    //     filteredData.forEach(row => {
+    //         // console.log(row);
+    //         const currNeighborhood = row["Neighborhood"];
+    //         const evictionFilingRate = parseFloat(row["% of Total Eviction Filings, as Fraction of Boston Total"]);
+    //         let demographicPercent = 0; 
+
+    //         if (selectedDemographic === 'Asian') {
+    //             demographicPercent = parseFloat(row["% Asian"]);
+    //         } else if (selectedDemographic === 'Black') {
+    //             demographicPercent = parseFloat(row["% Black"]);
+    //         } else if (selectedDemographic === 'Hispanic') {
+    //             demographicPercent = parseFloat(row["% Hispanic/Latinx"]);
+    //         } else if (selectedDemographic === 'White') {
+    //             demographicPercent = parseFloat(row["% White"]);
+    //         }
+    //         // console.log(row, evictionFilingRate, demographicPercent);
+    //         // console.log((evictionFilingRate/100) * (demographicPercent/100) * 100);
+    //         const risk = (evictionFilingRate/100) * (demographicPercent/100) * 100;
+    //         if (risk > maxVal) {
+    //             maxVal = risk; 
+    //         }
+    //         if (risk < minVal) {
+    //             minVal = risk; 
+    //         }
+
+    //         geoJsonDataRates.features.forEach(feature => {
+    //             if (feature.properties.Name === currNeighborhood) {
+    //                 // Update the property of the feature
+    //                 feature.properties.calc_rate = risk;
+    //             }
+    //         });
+
+    //     // map.setPaintProperty('risk', 'fill-color', {
+    //     //     property: 'calc_risk', // Property containing eviction risk data
+    //     //     stops: [
+    //     //         [0, 'green'],   // Low risk
+    //     //         [0.5, 'yellow'], // Medium risk
+    //     //         [1, 'red']      // High risk
+    //     //     ]
+    //     // });
+            
+    //     });
+    //     console.log(geoJsonDataRates);
+    //     console.log(minVal, maxVal);
+    //     return [minVal, maxVal];
+
+    //     // v5map.setPaintProperty(
+    //     //     'risk', 
+    //     //     'fill-color', 
+    //     //     ['interpolate', ['linear'], ['get', 'calc_rate'],
+    //     //         minVal, lowColor, 
+    //     //         maxVal, highColor
+    //     //     ]
+    //     // );
+
+    //   });
+
+    // }
+        // Function to interpolate color based on value and range
+    function interpolateColor(value, min, max, lowColor, highColor) {
+        const ratio = (value - min) / (max - min);
+        const lowColorHex = parseInt(lowColor.substring(1), 16);
+        const highColorHex = parseInt(highColor.substring(1), 16);
+        const interpolatedColorHex = Math.round(lowColorHex + (highColorHex - lowColorHex) * ratio);
+        const interpolatedColor = '#' + interpolatedColorHex.toString(16).padStart(6, '0');
+        
+        return interpolatedColor;
+    }
+
+    async function fetchDemographicData(selectedDemographic: string): Promise<[number, number]> {
+    try {
+        let maxVal = 0;
+        let minVal = 100;
+
+        const csvData = await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv');
+
+        // let filteredData = csvData.filter(row => row["Neighborhood"] !== 'Boston (Total)');
+
+        const filteredData = csvData.filter(row => availableNeighborhoods.includes(row["Neighborhood"]));
 
         filteredData.forEach(row => {
-            // console.log(row);
             const currNeighborhood = row["Neighborhood"];
             const evictionFilingRate = parseFloat(row["% of Total Eviction Filings, as Fraction of Boston Total"]);
-            let demographicPercent = 0; 
+            let demographicPercent = 0;
 
-            if (selectedDemographic === 'Asian') {
-                demographicPercent = parseFloat(row["% Asian"]);
-            } else if (selectedDemographic === 'Black') {
-                demographicPercent = parseFloat(row["% Black"]);
-            } else if (selectedDemographic === 'Hispanic') {
-                demographicPercent = parseFloat(row["% Hispanic/Latinx"]);
-            } else if (selectedDemographic === 'White') {
-                demographicPercent = parseFloat(row["% White"]);
+            switch (selectedDemographic) {
+                case 'Asian':
+                    demographicPercent = parseFloat(row["% Asian"]);
+                    break;
+                case 'Black':
+                    demographicPercent = parseFloat(row["% Black"]);
+                    break;
+                case 'Hispanic':
+                    demographicPercent = parseFloat(row["% Hispanic/Latinx"]);
+                    break;
+                case 'White':
+                    demographicPercent = parseFloat(row["% White"]);
+                    break;
+                default:
+                    break;
             }
-            // console.log(row, evictionFilingRate, demographicPercent);
-            // console.log((evictionFilingRate/100) * (demographicPercent/100) * 100);
-            const risk = (evictionFilingRate/100) * (demographicPercent/100) * 100;
+
+            const risk = (evictionFilingRate / 100) * (demographicPercent / 100) * 100;
             if (risk > maxVal) {
-                maxVal = risk; 
+                maxVal = risk;
             }
             if (risk < minVal) {
-                minVal = risk; 
+                minVal = risk;
             }
 
             geoJsonDataRates.features.forEach(feature => {
                 if (feature.properties.Name === currNeighborhood) {
-                    // Update the property of the feature
                     feature.properties.calc_rate = risk;
                 }
             });
-
-        // map.setPaintProperty('risk', 'fill-color', {
-        //     property: 'calc_risk', // Property containing eviction risk data
-        //     stops: [
-        //         [0, 'green'],   // Low risk
-        //         [0.5, 'yellow'], // Medium risk
-        //         [1, 'red']      // High risk
-        //     ]
-        // });
-            
         });
+
+        filteredData.forEach(row => {
+            geoJsonDataRates.features.forEach(feature => {
+                const neighborhoodName = feature.properties.Name;
+                const calcRate = feature.properties.calc_rate;
+    
+                // Calculate color based on interpolation
+                const calculatedColor = interpolateColor(calcRate, minVal, maxVal, lowColor, highColor);
+                feature.properties.calc_color = calculatedColor;
+                console.log(feature.properties.calc_color);
+    
+            // console.log(`${neighborhoodName}: ${calculatedColor}`);
+});
+        });
+
         console.log(geoJsonDataRates);
         console.log(minVal, maxVal);
 
-        v5map.setPaintProperty('risk', 'fill-color', [
-            'interpolate',
-            ['linear'],
-            ['get', 'calc_rate'],
-            minVal, lowColor, 
-            maxVal, highColor
-        ]);
-
-      });
-
-      
+        return [minVal, maxVal];
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+        throw error;
     }
+}
+
+    function updateMap() {
+        const paintProperty = v5map.getPaintProperty('risk', 'fill-color');
+        console.log(paintProperty);
+        // paintProperty[2][1] = vis_type + "_" + year;
+        // if (vis_type === 'percent') {
+        //     paintProperty[3] = min_percent;
+        //     paintProperty[5] = max_percent;
+        // } else {
+        //     paintProperty[3] = min_evictions;
+        //     paintProperty[5] = max_evictions;
+        // }
+        v5map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
+    }
+
   
     onMount(async () => {
         // geoJsonDataRates = d3.json('/datasets/Boston_Neighborhoods.geojson');
         await d3.json('/datasets/Boston_Neighborhoods.geojson').then(data => {
-            geoJsonDataRates.features = data.features;
+
+            const filteredFeatures = data.features.filter(feature => {
+                return availableNeighborhoods.includes(feature.properties.Name);
+            });
+
+            geoJsonDataRates.features = filteredFeatures;
+
+            // geoJsonDataRates.features = data.features;
 
             geoJsonDataRates.features.forEach(feature => {
                 feature.properties['calc_rate'] = 0;
+                feature.properties['calc_color'] = '#999999';
             });
         });
+
+        // const csvData = await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv');
+        // const filteredData = csvData.filter(row => availableNeighborhoods.includes(row["Neighborhood"]));
 
         // console.log(geoJsonDataRates);
         // console.log(type(geoJsonDataRates.features);
@@ -181,16 +308,61 @@
                 }
             });
 
+            // v5map.addLayer({
+            //     id: 'risk',
+            //     type: 'fill',
+            //     source: 'neighborhoods',
+            //     paint: {
+            //         'fill-color': 'grey',
+            //         'fill-opacity': 0.4
+            //     }
+            // });
+            // v5map.addLayer({
+            //     'id': 'risk',
+            //     'type': 'fill',
+            //     'source': 'neighborhoods',
+            //     'paint': {
+            //         'fill-color': [
+            //             'interpolate',
+            //             ['linear'],
+            //             ['get', 'calc_rate'],
+            //             0, 'grey',
+            //             1, 'grey'
+            //         ],
+            //         'fill-opacity': .7 // Adjust opacity if needed
+            //     }
+            // });
             v5map.addLayer({
-                id: 'risk',
-                type: 'fill',
-                source: 'neighborhoods',
-                paint: {
-                    'fill-color': 'grey',
-                    'fill-opacity': 0.4
+                'id': 'risk',
+                'type': 'fill',
+                'source': 'neighborhoods',
+                'paint': {
+                    'fill-color': ['get', 'calc_color'],
+                    'fill-opacity': .7 // Adjust opacity if needed
                 }
             });
 
+            function updateLegend() {
+                        const lowLegend = document.getElementById('low-legend');
+                        const highLegend = document.getElementById('high-legend');
+                        // lowLegend!.textContent = min_percent.toFixed(2) + '%';
+                        // highLegend!.textContent = max_percent.toFixed(2) + '%';
+
+                        // console.log(min_percent, max_percent, min_evictions, max_evictions);
+                    }
+
+            const legend = document.getElementById('legend');
+            const legendColor = document.getElementById('legend-color');
+            // Set background of legend color to be a gradient between lowColor and highColor
+            legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
+            // Set text of low and high legend
+            updateLegend();
+
+            document.getElementById('demoform')!.addEventListener('submit', (event) => {
+                        // year = parseInt(event.target.value);
+                        // update the map
+                updateMap();
+            });
 
 
         // map.on('click', 'city-outlines', (e) => {
@@ -201,34 +373,134 @@
         });
     });
     
-  
+
     // Function to handle form submission
-    async function handleSubmitDemographic(event: Event) {
-        event.preventDefault();
-        demographicData = await fetchDemographicData(selectedDemographic); // Get selected demographic from form
-        console.log('seleced', selectedDemographic);
-//         const obj = { lst1: 300, lst2: 381, lst3: 4, lst4: 4, lst5: 49 }
-// const values = Object.values(obj)
-// const lowest = Math.min.apply(null, values)
+//     async function handleSubmitDemographic(event: Event) {
+//         event.preventDefault();
+//         // demographicData = await fetchDemographicData(selectedDemographic); // Get selected demographic from form
+//         console.log('seleced', selectedDemographic);
+
+//         let testing = await fetchDemographicData(selectedDemographic);
+//         console.log(testing);
+
+//         // await fetchDemographicData(selectedDemographic).then(data => {
+//         //     console.log('dat', data[0], data[1]);
+//         //     console.log('hi', geoJsonDataRates.features[0].properties.calc_rate);
+
+//         //     v5map.setPaintProperty(
+//         //     'risk', 
+//         //     'fill-color', 
+//         //     ['interpolate', ['linear'], ['get', 'calc_rate'],
+//         //         data[0], lowColor, 
+//         //         data[1], highColor
+//         //     ]
+//         // );
+//         //     // console.log(minVal, maxVal);
+//         // });
+// //         const obj = { lst1: 300, lst2: 381, lst3: 4, lst4: 4, lst5: 49 }
+// // const values = Object.values(obj)
+// // const lowest = Math.min.apply(null, values)
 
 
 
-        // map.setPaintProperty('neighborhoods', 'fill-color', {
-        //     property: 'eviction_risk', // Property containing eviction risk data
-        //     stops: [
-        //         [0, 'green'],   // Low risk
-        //         [0.5, 'yellow'], // Medium risk
-        //         [1, 'red']      // High risk
-        //     ]
-        // });
+//         // map.setPaintProperty('neighborhoods', 'fill-color', {
+//         //     property: 'eviction_risk', // Property containing eviction risk data
+//         //     stops: [
+//         //         [0, 'green'],   // Low risk
+//         //         [0.5, 'yellow'], // Medium risk
+//         //         [1, 'red']      // High risk
+//         //     ]
+//         // });
 
-      // Update map visualization with new demographic data
+//       // Update map visualization with new demographic data
+//     }
+
+async function handleSubmitDemographic(event: Event) {
+    event.preventDefault();
+
+    try {
+        console.log('selected', selectedDemographic);
+
+        const [minVal, maxVal] = await fetchDemographicData(selectedDemographic);
+        console.log('minVal:', minVal, 'maxVal:', maxVal);
+
+        // Log calculated rates for debugging
+        geoJsonDataRates.features.forEach(feature => {
+            console.log(feature.properties.Name, feature.properties.calc_rate);
+        });
+
+
+
+        geoJsonDataRates.features.forEach(feature => {
+    const neighborhoodName = feature.properties.Name;
+    const calcRate = feature.properties.calc_rate;
+    
+    // Calculate color based on interpolation
+    const calculatedColor = interpolateColor(calcRate, minVal, maxVal, lowColor, highColor);
+    
+    console.log(`${neighborhoodName}: ${calculatedColor}`);
+
+    v5map.setPaintProperty('risk', 'fill-color', {property: 'calc_rate', stops: [
+                [0, 'green'],   // Low risk
+                [0.5, 'yellow'], // Medium risk
+                [1, 'red']      // High risk
+            ]});
+});
+
+
+
+
+        // v5map.repaint();
+    } catch (error) {
+        console.error('Error handling demographic data:', error);
+        // Handle errors gracefully, e.g., display an error message to the user
     }
+}
 
     async function handleSubmitIncome(event: Event) {
         event.preventDefault();
         // const demographic = await fetchDemographicData(selectedDemographic); // Get selected demographic from form
         console.log('selected', selectedIncome);
     }
+
+
         
   </script>
+
+<style>
+    .map-overlay {
+        /* position: absolute; */
+        min-width: 200px;
+        max-width: 320px;
+        background-color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #legend-color {
+        height: 20px;
+        margin-bottom: 8px;
+    }
+
+    #legend-label {
+        display: flex;
+        justify-content: space-between;
+        font-size:1.25rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size:1.25rem;
+    }
+
+    .v5-container {
+        /* position: relative; */
+        /* width: 100%;
+        height: 85vh; */
+        margin: -8px; /* Offset the 8px margin added by default in body */
+        display: flex;
+    }
+</style>

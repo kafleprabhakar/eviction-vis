@@ -5,6 +5,7 @@
     import EvictionJudgement from '$lib/components/EvictionJudgement.svelte';
 	import V4 from "$lib/components/V4.svelte";
 	import V5Map from "$lib/components/V5Map.svelte";
+	import V5Ahh from "$lib/components/V5Ahh.svelte";
 </script>
 
 <div class='everything'>
@@ -67,7 +68,8 @@
 	<!-- VIS 5 -->
 	<div class='vis-section'>
 		<h2 class='header-title'>What if it was you?</h2>
-		<V5Map/>
+		<!-- <V5Map/> -->
+		<V5Ahh/>
 	</div>
 </div>
 

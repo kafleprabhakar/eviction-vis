@@ -38,6 +38,10 @@
             <div class="v5-legend-item" id="v5-high-legend"></div>
         </div>
 
+        <div class="v5-words">
+            Select a demographic to visualize the eviction rate for that group. Hover over the map to see the percentage for each neighborhood. 
+        </div>
+
     </div>
 </div>
 
@@ -331,6 +335,11 @@
         cursor: auto;
     }
 
+    .v5-words {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+    }
+    
     .inputForm{
         margin-bottom: 3rem;
         align-self: center;

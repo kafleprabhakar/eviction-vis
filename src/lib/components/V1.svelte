@@ -100,6 +100,7 @@
 
         width: 25%; /* Adjust the width as needed */
         background-color: #072B69;
+
         color: white;
         padding: .8rem 1.5rem;
         text-align: center;
@@ -114,13 +115,13 @@
     }
     .mapimage{
         /* position: absolute; */
-        width: 400px;
+        width: 450px;
         height: 300px;
         border: 1px solid #ccc;
         opacity: var(--mapImageOpacity); /* Start with opacity 0 */
         transition: opacity 0.5s ease;
         margin: 5rem 0; 
-        margin-left: calc(100vw - 750px);
+        margin-left: calc(100vw - 550px);
     }
 
     .info {
@@ -173,19 +174,22 @@
     </div>
 
     <!-- map -->
-    <img class ="mapimage" src="images/bostonMap.png" style = "width: 40%" alt="Boston Map">
+    <img class ="mapimage" src="images/bostonMap.png" alt="Boston Map">
 
     <!-- All blanks -->
     <div class="container" style="top: 605px; left: 1225px;">
         <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
     </div>
-    <div class="container" style="top: 820px; left: 1300px;" >
+    <div class="container" style="top: 800px; left: 1300px;" >
         <img class="image" src="images/clear.png" alt="Person" style="width: 50px">
     </div>
     <div class="container" style="top: 620px; left: 830px;">
         <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
     </div>
-    <div class="container" style="top: 830px; left: 730px;">
+    <div class="container" style="top: 1020px; left: 720px;">
+        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    </div>
+    <div class="container" style="top: 780px; left: 670px;">
         <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
     </div>
     <div class="container" style="top: 1330px; left: 1230px;">
@@ -238,7 +242,7 @@
     </div>
 
     <div class = "left-block">
-        <p>SINCE @xxxxxx HAVE BEEN AFFECTED</p>
+        <p>In Boston, around 80% of evictions are reportedly filed for non-payment of rent.</p>
     </div>
 
 </div>

@@ -8,6 +8,7 @@
         <option value="Black">Black</option>
         <option value="Hispanic">Hispanic</option>
         <option value="White">White</option>
+        <option value="Other">Other</option>
       </select>
     </label>
     <button type="submit">Submit</button>
@@ -47,7 +48,7 @@
 
 
 <script lang="ts">
-    import { onMount, afterUpdate } from 'svelte';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import mapboxgl from 'mapbox-gl';
   
@@ -60,8 +61,8 @@
     let selectedDemographic: string = ''; // Selected demographic option
     let selectedIncome: string = ''; // Selected demographic option
     let csvData: any; 
-    let overallMin = 0; 
-    let overallMax = 0; 
+    let overallMin = 0.03; 
+    let overallMax = 14.12; 
     
     const geoJsonDataRates = { type: 'FeatureCollection', features: {}}; // GeoJSON data for Boston neighborhoods
     const availableNeighborhoods = ['Roslindale', 'Jamaica Plain', 
@@ -99,6 +100,9 @@
                     case 'White':
                         demographicPercent = parseFloat(row["% White"]);
                         break;
+                    case 'Other':
+                        demographicPercent = parseFloat(row["% Other"]);
+                        break;
                     default:
                         demographicPercent = 0;
                         break;
@@ -130,8 +134,8 @@
 
             console.log(geoJsonDataRates.features);
             // console.log(minVal, maxVal);
-            overallMin = minVal;
-            overallMax = maxVal;
+            // overallMin = minVal;
+            // overallMax = maxVal;
 
             return [minVal, maxVal];
         } catch (error) {
@@ -308,8 +312,8 @@
                 'risk', 
                 'fill-color', 
                 ['interpolate', ['linear'], ['get', 'calc_rate'],
-                    minVal, lowColor, 
-                    maxVal, highColor
+                    overallMin, lowColor, 
+                    overallMax, highColor
                 ]
             );
 

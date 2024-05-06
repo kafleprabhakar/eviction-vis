@@ -108,6 +108,8 @@
             mode = "Eviction Risk";
             overallMin = 0.03; 
             overallMax = 14.12; 
+            lowColor = '#f7d654';
+            highColor = '#e64302';
 
             document.getElementById('demoform')!.style.display = 'block';
             document.getElementById('incomeform')!.style.display = 'none';
@@ -115,8 +117,12 @@
             mode = "Income Burden";
             overallMin = 17.84; 
             overallMax = 173.08; 
+            lowColor = '#B2E6FF'; 
+            highColor = '#1636A9';
+
             document.getElementById('demoform')!.style.display = 'none';
             document.getElementById('incomeform')!.style.display = 'block';
+
         }
         updateLegend();
     }
@@ -152,6 +158,9 @@
         const highLegend = document.getElementById('v5-high-legend');
         lowLegend!.textContent = overallMin.toFixed(2) + "%";
         highLegend!.textContent = overallMax.toFixed(2) + "%";
+
+        const legendColor = document.getElementById('v5-legend-color');
+        legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
     }
   
     onMount(async () => {
@@ -197,12 +206,28 @@
             });
 
             v5map.addLayer({
+                'id': 'risk',
+                'type': 'fill',
+                'source': 'neighborhoods',
+                'paint': {
+                    'fill-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'calc_rate'],
+                        0, 'grey',
+                        1, 'grey'
+                    ],
+                    'fill-opacity': .75 // Adjust opacity if needed
+                }
+            });
+
+            v5map.addLayer({
                 id: 'neighborhoods-outline',
                 type: 'line',
                 source: 'neighborhoods',
                 paint: {
                     'line-color': '#000',
-                    'line-width': 1
+                    'line-width': 0.75
                 }
             });
 
@@ -220,27 +245,7 @@
                 }
             });
 
-            v5map.addLayer({
-                'id': 'risk',
-                'type': 'fill',
-                'source': 'neighborhoods',
-                'paint': {
-                    'fill-color': [
-                        'interpolate',
-                        ['linear'],
-                        ['get', 'calc_rate'],
-                        0, 'grey',
-                        1, 'grey'
-                    ],
-                    'fill-opacity': .6 // Adjust opacity if needed
-                }
-            });
-
-            handlePopup();
-
-            const legendColor = document.getElementById('v5-legend-color');
-            legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
-            
+            handlePopup();            
             updateLegend();
 
             document.getElementById('demoform')!.addEventListener('submit', (event) => {
@@ -404,7 +409,7 @@
                     const medianIncome = feature.properties.median_income;
                     const percentBurden = feature.properties.percent_burden;
         
-                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Selected Income Burden: ${burden.toFixed(2)}%</p><p>Average Rent: $${avgRent}</p><p>Median Income: $${medianIncome}</p><p>Percent Households with Rent Burden: ${percentBurden.toFixed(2)}%</p>`;
+                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Selected Income Burden: ${burden.toFixed(2)}%</p><p>Average Rent: $${avgRent}</p><p>Median Income: $${medianIncome}</p><p>Overall Percent Households with Rent Burden: ${percentBurden.toFixed(2)}%</p>`;
 
                 });
             });
@@ -469,6 +474,7 @@
     .v5-words {
         font-size: 1.1rem;
         margin-top: 1rem;
+        transition: all 0.3s ease;
     }
     
     .inputForm{
@@ -606,8 +612,8 @@
     }
 
     :root {
-		--accent-color: CornflowerBlue;
-		--gray: #ccc;
+		--accent-color: rgb(91 125 233);
+		--gray: #ffae45;
 	}
 
     

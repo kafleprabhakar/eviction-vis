@@ -16,7 +16,11 @@ const config = {
 		// paths: {
         //     base: process.env.NODE_ENV === 'production' ? '/eviction-vis' : '',
         // }
-	}
+	}, 
+	onwarn: (warning, handler) => {
+		if (warning.code.startsWith('a11y-')) return
+		handler(warning)
+	  },
 };
 
 export default config;

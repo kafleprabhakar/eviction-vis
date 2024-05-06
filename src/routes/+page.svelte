@@ -4,7 +4,6 @@
 	import CorpLineChart from '$lib/components/CorpLineChart.svelte';
     import EvictionJudgement from '$lib/components/EvictionJudgement.svelte';
 	import V4 from "$lib/components/V4.svelte";
-	import V5Map from "$lib/components/V5Map.svelte";
 	import V5Ahh from "$lib/components/V5Ahh.svelte";
 
 	function scrollTo(elementId: string) {
@@ -27,7 +26,7 @@
 
 <div class='everything'>
 	<!-- VIS 1 -->
-	<div class='vis-section v1' id="v1">
+	<div class='vis-section' id="v1">
 		<header class='header-title'>
 			<h1 class='first-title'>EVICTIONS IN BOSTON</h1>
 		</header>
@@ -78,7 +77,7 @@
 
 	<!-- VIS 5 -->
 	<div class='vis-section' id="v5">
-		<h2 class='header-title'>What if it was you?</h2>
+		<h2 class='header-title5'>What if it was you?</h2>
 		<!-- <V5Map/> -->
 		<V5Ahh/>
 	</div>
@@ -136,9 +135,19 @@
 		align-self: center;
 	}
 
-	.v1 {
+	.header-title5{
+		align-self: center;
+		margin-bottom: 2.5rem;
+	}
+
+	#v1 {
 		margin-bottom: 15rem;
 	}
+
+	#v4 {
+		margin-bottom: 5rem;
+	}
+
 
 	.vis-section {
 		display: flex;

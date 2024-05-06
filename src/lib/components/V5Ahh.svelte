@@ -479,8 +479,8 @@
     
     .v5-map-overlay {
         /* position: absolute; */
-        min-width: 200px;
-        max-width: 320px;
+        min-width: 350px;
+        max-width: 380px;
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;

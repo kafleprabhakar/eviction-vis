@@ -4,7 +4,8 @@
 	import CorpLineChart from '$lib/components/CorpLineChart.svelte';
     import EvictionJudgement from '$lib/components/EvictionJudgement.svelte';
 	import V4 from "$lib/components/V4.svelte";
-	import V5Ahh from "$lib/components/V5Ahh.svelte";
+	import V5 from "$lib/components/V5.svelte";
+	import V6 from "$lib/components/V6.svelte";
 
 	function scrollTo(elementId: string) {
         const element = document.getElementById(elementId);
@@ -21,7 +22,8 @@
         <li class='scroll-link'><a on:click={() => scrollTo('v3')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
         <li class='scroll-link'><a on:click={() => scrollTo('v4')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
 		<li class='scroll-link'><a on:click={() => scrollTo('v5')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-    </ul>
+		<li class='scroll-link'><a on:click={() => scrollTo('v6')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+	</ul>
 </div>
 
 <div class='everything'>
@@ -78,9 +80,15 @@
 	<!-- VIS 5 -->
 	<div class='vis-section' id="v5">
 		<h2 class='header-title5'>What if it was you?</h2>
-		<!-- <V5Map/> -->
-		<V5Ahh/>
+		<V5/>
 	</div>
+
+	<!-- Resources -->
+	<div class='vis-section' id="v6">
+		<h2 class='header-title5'>What Can We Do?</h2>
+		<V6/>
+	</div>
+
 </div>
 
 <div class='footer'>
@@ -145,9 +153,16 @@
 	}
 
 	#v4 {
-		margin-bottom: 5rem;
+		margin-bottom: 7rem;
 	}
 
+	#v5 {
+		margin-bottom: 8rem;
+	}
+
+	#v6 {
+		min-height: 90vh;
+	}
 
 	.vis-section {
 		display: flex;

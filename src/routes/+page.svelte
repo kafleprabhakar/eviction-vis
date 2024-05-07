@@ -6,6 +6,7 @@
 	import V4 from "$lib/components/V4.svelte";
 	import V5 from "$lib/components/V5.svelte";
 	import V6 from "$lib/components/V6.svelte";
+	import Credits from "$lib/components/Credits.svelte";
 
 	function scrollTo(elementId: string) {
         const element = document.getElementById(elementId);
@@ -92,7 +93,7 @@
 </div>
 
 <div class='footer'>
-	<p>Acknowledgements and Datasets</p>
+	<Credits/>
 </div>
 
 <style>
@@ -201,9 +202,8 @@
 	}
 
 	.footer {
-		background-color: #B7BBC2;
+		background-color: #a9a9a9;
 		color: #F8F7F5;
-		height: 25vh;
 		width:100%;
 		position:absolute;
 		left:0; 
@@ -211,6 +211,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		outline:none;
 	}
 
 </style>

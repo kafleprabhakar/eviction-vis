@@ -40,6 +40,7 @@
         margin-bottom: 0;
         margin-top: 0;
         font-size: 2rem;
+        color: #072B69;
     }
 
     .v6-list {

@@ -101,7 +101,7 @@
   }
 
   button:hover {
-    background-color: #ED5701;
+    background-color: #feb64a;
     cursor: pointer;
     outline: none;
 

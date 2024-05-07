@@ -57,7 +57,7 @@
 
     .credit-link {
         text-decoration: none;
-        color: #072B69;
+        color: #1658d2;
     }
 
     .credit-link:hover {

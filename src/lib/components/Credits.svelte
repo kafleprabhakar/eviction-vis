@@ -10,8 +10,13 @@
 
     <div class='references'>
         <h3 class='credit-header'>References</h3>
-        <p class='credit-words'>Eviction data was sourced from the <a href='https://data.boston.gov/dataset/eviction-data'>City of Boston</a></p>
-        <p class='credit-words'>Demographic data was sourced from the <a href='https://data.boston.gov/dataset/census-demographics'>City of Boston</a></p>
+        <p class='credit-words'><a class='credit-link' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
+        <p class='credit-words'><a class='credit-link' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
+        <p class='credit-words'><a class='credit-link' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
+
+        <p class='credit-words'>Placeholder</p>
+        <p class='credit-words'>Placeholder</p>
+        <p class='credit-words'>Placeholder</p>
 
     </div>
 

@@ -7,6 +7,7 @@
 	import V5 from "$lib/components/V5.svelte";
 	import V6 from "$lib/components/V6.svelte";
 	import Credits from "$lib/components/Credits.svelte";
+	import { onMount, onDestroy } from 'svelte';
 
 	function scrollTo(elementId: string) {
         const element = document.getElementById(elementId);
@@ -14,16 +15,47 @@
             element.scrollIntoView({ behavior: 'smooth' });
         }
     }
+	
+	let currentSection = '';
+    // Set the current section on page load
+    onMount(() => {
+        currentSection = window.location.hash.substring(1); // Remove '#' from hash
+		// console.log("hi", currentSection);
+    });
+
+	const updateCurrentSection = () => {
+		const sections = document.querySelectorAll('.vis-section');
+		let minDistance = Number.MAX_SAFE_INTEGER;
+		let nearestSection = '';
+		sections.forEach(section => {
+			const distance = Math.abs(section.getBoundingClientRect().top);
+			if (distance < minDistance) {
+				minDistance = distance;
+				nearestSection = section.id;
+			}
+		});
+		currentSection = nearestSection;
+	};
+
+	if (typeof window !== 'undefined') {
+		window.addEventListener('scroll', updateCurrentSection);
+
+		// Cleanup listener on component destruction
+		onDestroy(() => {
+			window.removeEventListener('scroll', updateCurrentSection);
+		});
+	}
 </script>
+
 <div class='sidebar'>
     <!-- Sidebar navigation links -->
     <ul class="sidebar-nav">
-        <li class='scroll-link'><a on:click={() => scrollTo('v1')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-        <li class='scroll-link'><a on:click={() => scrollTo('v2')}><svg  width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-        <li class='scroll-link'><a on:click={() => scrollTo('v3')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-        <li class='scroll-link'><a on:click={() => scrollTo('v4')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-		<li class='scroll-link'><a on:click={() => scrollTo('v5')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
-		<li class='scroll-link'><a on:click={() => scrollTo('v6')}><svg width="100" height="50"><circle class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v1')}><svg width="100" height="50"><circle class:selected={currentSection === 'v1'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v2')}><svg width="100" height="50"><circle class:selected={currentSection === 'v2'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v3')}><svg width="100" height="50"><circle class:selected={currentSection === 'v3'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v4')}><svg width="100" height="50"><circle class:selected={currentSection === 'v4'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+		<li class='scroll-link'><a on:click={() => scrollTo('v5')}><svg width="100" height="50"><circle class:selected={currentSection === 'v5'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+		<li class='scroll-link'><a on:click={() => scrollTo('v6')}><svg width="100" height="50"><circle class:selected={currentSection === 'v6'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
 	</ul>
 </div>
 
@@ -134,6 +166,11 @@
         display: block;
         padding: 10px;
         text-decoration: none;
+    }
+
+    .selected {
+        /* fill: #ff0;  */
+		fill: #ED5701;
     }
 
 	.first-title{

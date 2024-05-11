@@ -20,6 +20,9 @@
     // Set the current section on page load
     onMount(() => {
         currentSection = window.location.hash.substring(1); // Remove '#' from hash
+		if (currentSection === '') {
+			currentSection = 'v1';
+		}
 		// console.log("hi", currentSection);
     });
 

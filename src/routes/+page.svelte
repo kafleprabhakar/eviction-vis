@@ -208,7 +208,7 @@
 	}
 
 	#v6 {
-		min-height: 90vh;
+		margin-bottom: 8rem;
 	}
 
 	.vis-section {

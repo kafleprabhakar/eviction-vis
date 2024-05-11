@@ -31,7 +31,7 @@
 
 
   <div class='v5-container'>
-    <div id="v5map" style="width: 90%; height: 600px;"></div>
+    <div id="v5map" style="width: 100%; height: 680px;"></div>
     <div class="v5-map-overlay" id="legend">
 
         <div class='slider-container'>
@@ -61,9 +61,12 @@
 
         <div class="v5-words">
             {#if sliderValue === 'Eviction Risk'}
-                Select a demographic to visualize the eviction risk for that group. Hover over the map to see the percentage for each neighborhood. While the data for eviction risk can provide insight into the relative trends for different neighborhoods and demographics, it is important to note households are evicted for different reasons beyond race. The correlations do not necessarily imply causation.
+                <p>Select a demographic to visualize the eviction risk for that group. Hover over the map to see the specific percentage for each neighborhood.</p>
+                <p>While the data for eviction risk can provide insight into the relative trends for different neighborhoods and demographics, it is <b>important to note households are evicted for different reasons beyond race</b>. The correlations do not necessarily imply causation, but can provide insight on how historical systemic inequalities impact groups today.</p>
             {:else}
-                Select an income range to visualize the rent burden for that group. Hover over the map to see the percentage, average rent, median income, and percentage of households with rent burden for each neighborhood. Percentage of households with rent burden refers to the percent of renter households paying more than 30% of their income on housing costs. 
+                <p>Select an income range to visualize the rent burden for that group. Hover over the map to see the percentage and more details for each neighborhood.</p>
+                <p>Percentage of households with rent burden refers to the percent of renter households paying more than 30% of their income on housing costs. <b>More than half of Bostonians have to spend more than 30%</b> of their income just to keep themselves housed, meaning families have to choose between paying rent, eating, accessing medicines, or other necessities. Consequences of not paying rent include foreclosure, eviction, and all physical and mental health consquences of homelessness.</p>
+                 
             {/if}
         </div>
 
@@ -191,7 +194,7 @@
             container: 'v5map',
             style: 'mapbox://styles/mapbox/light-v11',
             center: [-71.0596, 42.3101], // Boston coordinates
-            zoom: 10.5,
+            zoom: 10.7,
             scrollZoom: false, 
             dragPan: false,
             
@@ -485,8 +488,7 @@
     
     .v5-map-overlay {
         /* position: absolute; */
-        min-width: 350px;
-        max-width: 380px;
+        width: 45%;
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;
@@ -557,10 +559,10 @@
         padding-left: 5em;
     }
 
-    .s--multi:focus-within label:first-of-type:after {
+    /* .s--multi:focus-within label:first-of-type:after {
         box-shadow: 0 0px 8px var(--accent-color);
         border-radius: 1.5em;
-    }
+    } */
 
     /* making the switch UI.  */
     .s--multi label:first-of-type:before,
@@ -606,10 +608,10 @@
         z-index: 1;
     }
 
-    .s--multi input:focus {
+    /* .s--multi input:focus {
         box-shadow: 0 0px 8px var(--accent-color);
         border-radius: 1.5em;
-    }
+    } */
 
     :root {
 		--accent-color: rgb(91 125 233);

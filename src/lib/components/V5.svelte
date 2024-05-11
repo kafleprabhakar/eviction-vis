@@ -616,5 +616,38 @@
 		--gray: #ffae45;
 	}
 
+    select {
+    /* width: 100%; */
+    padding: 0.5rem; /* Adjust padding as needed */
+    font-size: 1.2rem; /* Adjust font size as needed */
+    border: none; /* Add a border */
+    outline: none; /* Remove default outline */
+    border-bottom: 2px solid #403E3A;
+    color: #403E3A;
+    background: none;
+    margin-right: 1rem;
+  }
+
+  /* Style the select element when focused */
+  select:hover {
+    cursor: pointer;
+  }
+
+  /* Style the input button */
+  button[type="submit"] {
+    background-color: #072B69;
+    color: #fff;
+    font-size: 1rem; /* Adjust font size as needed */
+    padding: 0.5rem 2rem; /* Adjust padding as needed */
+    border: none;
+    border-radius: 10rem;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Add transition for background color */
+  }
+
+  /* Style the input button on hover */
+  button[type="submit"]:hover {
+    background-color: #feb64a; /* Change background color on hover */
+  }
     
 </style>

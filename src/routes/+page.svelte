@@ -32,6 +32,7 @@
 		let nearestSection = '';
 		sections.forEach(section => {
 			const distance = Math.abs(section.getBoundingClientRect().top);
+			console.log("distance", distance);
 			if (distance < minDistance) {
 				minDistance = distance;
 				nearestSection = section.id;
@@ -78,32 +79,29 @@
 		<TemporalMap/>
 	</div>
 
-
-	<div class='vis-spacer1'>
-		<h2 class='who'>BUT WHO IS ISSUING THESE EVICTIONS?</h2>
-	</div>
-
 	<!-- VIS 3 -->
 	<div class='vis-section' id="v3">
+		<div class='vis-spacer1'>
+			<h2 class='who'>BUT WHO IS ISSUING THESE EVICTIONS?</h2>
+		</div>
 		<h2 class='header-title'>Corporate Evictions</h2>
 		<CorpLineChart />
 		<EvictionJudgement />
 	</div>
 
 	<div class='vis-spacer2'>
-		<h3 class='toWho'>Who are these Evictions Impacting?</h3>
-		<p> Despite Boston's reputation for diversity and its plethora of vibrant
-			neighborhoods, there exists a troubling pattern of inequality, particularly
-			concerning eviction rates among minority-heavy communities. While the city
-			boasts a rich tapestry of cultures and identities, certain neighborhoods
-			with higher minority populations often bear the brunt of eviction crises
-			than those that boost a higher white or asian population. This disparity
+		<h3 class='toWho'>Who Are These Evictions Impacting?</h3>
+		<p style='color:#403E3A'> While Boston holds a reputation for its diversity and plethora of vibrant
+			neighborhoods, there exists a troubling pattern of inequality within the area, particularly
+			concerning eviction rates among minority-heavy communities. The city
+			boasts a rich tapestry of cultures and identities, however certain neighborhoods
+			with <b>higher minority populations often bear the brunt of eviction crises</b>
+			compared to those that boast a higher White or Asian population. This disparity
 			underscores systemic issues of housing discrimination, economic disparity,
-			and unequal access to resources. Despite efforts to address these
-			disparities, such as through community outreach programs and policy
-			initiatives, the persistent prevalence of evictions in minority-heavy
-			neighborhoods highlights the urgent need for comprehensive and equitable
-			solutions to ensure fair and just housing opportunities for all residents of
+			and unequal access to resources. Efforts such as community outreach programs and policy initiatives
+			attempt to address these disparities, but the persistent prevalence of evictions in minority-heavy
+			neighborhoods highlights <b>the vital need for comprehensive and equitable
+			solutions</b> to ensure fair and just housing opportunities for all residents of
 			Boston.</p>
 	</div>
 
@@ -115,7 +113,7 @@
 
 	<!-- VIS 5 -->
 	<div class='vis-section' id="v5">
-		<h2 class='header-title5'>What if it was you?</h2>
+		<h2 class='header-title5'>What If It Was You?</h2>
 		<V5/>
 	</div>
 
@@ -190,11 +188,19 @@
 	}
 
 	#v1 {
+		margin-bottom: 30rem;
+	}
+
+	#v2 {
 		margin-bottom: 15rem;
 	}
 
+	#v3 {
+		margin-bottom: 18rem;
+	}
+
 	#v4 {
-		margin-bottom: 7rem;
+		margin-bottom: 15rem;
 	}
 
 	#v5 {
@@ -218,8 +224,7 @@
 		padding: 7rem;
 		font-size: 4rem;
 		text-align: center;
-		margin-top: 11rem;
-		margin-bottom: 11rem;
+		margin-bottom: 10rem;
 		letter-spacing: .2rem;
 	}
 
@@ -233,6 +238,7 @@
 		/* padding-right: 10rem;
 		padding-left: 10rem; */
 		margin-bottom: 5rem;
+		text-align: center;
 	}
 
 	.toWho {

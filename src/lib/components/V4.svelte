@@ -1,9 +1,11 @@
 <script lang="ts">
     let currentImage = "images/africanamerican.png"; // Store the path of the current image
+    let selectedButton = "african-american"; // Store the ID of the selected button
   
     // Function to set the current image when a button is clicked
-    function setImage(imagePath: string) {
+    function setImage(imagePath: string, buttonID: string) {
       currentImage = imagePath;
+      selectedButton = buttonID;
     }
 </script>
   
@@ -16,37 +18,18 @@
     {#if currentImage}
       <img src={currentImage} alt="Selected" height="500" />
     {/if}
-
+    
     <div class="button-container">
       <!-- Buttons to select different images -->
-      <button on:click={() => setImage("images/africanamerican.png")}
-        >African American</button
-      >
-      <button on:click={() => setImage("images/asian.png")}>Asian</button>
-      <button on:click={() => setImage("images/hispanic.png")}>Hispanic</button>
-      <button on:click={() => setImage("images/white.png")}>White</button>
+      <button on:click={() => setImage("images/africanamerican.png", "african-american")} class:selected={selectedButton === "african-american"}>African American</button>
+      <button on:click={() => setImage("images/asian.png", "asian")} class:selected={selectedButton === "asian"}>Asian</button>
+      <button on:click={() => setImage("images/hispanic.png", "hispanic")} class:selected={selectedButton === "hispanic"}>Hispanic</button>
+      <button on:click={() => setImage("images/white.png", "white")} class:selected={selectedButton === "white"}>White</button>
     </div>
 
     <!-- Display the selected image -->
   </div>
 
-  <!-- <div class="text-container">
-    <h1 class="text">
-      Despite Boston's reputation for diversity and its plethora of vibrant
-      neighborhoods, there exists a troubling pattern of inequality, particularly
-      concerning eviction rates among minority-heavy communities. While the city
-      boasts a rich tapestry of cultures and identities, certain neighborhoods
-      with higher minority populations often bear the brunt of eviction crises
-      than those that boost a higher white or asian population. This disparity
-      underscores systemic issues of housing discrimination, economic disparity,
-      and unequal access to resources. Despite efforts to address these
-      disparities, such as through community outreach programs and policy
-      initiatives, the persistent prevalence of evictions in minority-heavy
-      neighborhoods highlights the urgent need for comprehensive and equitable
-      solutions to ensure fair and just housing opportunities for all residents of
-      Boston.
-    </h1>
-  </div> -->
 </div>
   
 <style>
@@ -56,23 +39,6 @@
     align-items: center;
     text-align: center;
   }
-
-  /* .text {
-    top: 50%;
-    width: 800px;
-    padding: 10px;
-    background-color: #feb64a;
-    color: #F8F7F5;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 1.5;
-    justify-content: center;
-  }
-  .text-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  } */
 
   .contain {
     display: flex;
@@ -105,6 +71,10 @@
     cursor: pointer;
     outline: none;
 
+  }
+
+  .selected {
+    background-color: #feb64a; /* Change to desired color for the selected button */
   }
 </style>
   

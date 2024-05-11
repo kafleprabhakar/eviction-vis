@@ -19,12 +19,12 @@
   
     function handleScroll() {
       const scrollPosition = window.scrollY;
-      infoSectionOpacity = scrollPosition > 200 ? 0 : 1;
-      leftBlockOpacity = scrollPosition > 200 ? 1 : 0;
-      mapImageOpacity = scrollPosition > 200 ? 1 : 0;
-      rightBlockOpacity = scrollPosition > 200 ? 1 : 0;
-      containersOpacity = scrollPosition > 200 ? 1 : 0;
-      returnToTopVisible = scrollPosition > 200;
+      infoSectionOpacity = scrollPosition > 180 ? 0 : 1;
+      leftBlockOpacity = scrollPosition > 180 ? 1 : 0;
+      mapImageOpacity = scrollPosition > 180 ? 1 : 0;
+      rightBlockOpacity = scrollPosition > 180 ? 1 : 0;
+      containersOpacity = scrollPosition > 180 ? 1 : 0;
+      returnToTopVisible = scrollPosition > 180;
     }
   
     function returnToTop() {
@@ -129,7 +129,7 @@
         text-align: center;
         align-self: center;
         width: 75%;
-        margin-bottom: 8rem;
+        margin-bottom: 7rem;
         opacity: var(--infoSectionOpacity); /* Start with opacity 1 */
         transition: opacity 0.3s ease; /* Add transition for opacity */
     }
@@ -145,7 +145,7 @@
 
 <div class="info" style="opacity:{infoSectionOpacity}">
     <p>
-        Boston is one of the most expensive places to live in the United States. With the second highest average monthly rent index in the entire country, a third of renters pay more than 30 percent of their income on housing costs. Any change in income including rent increase, a medical bill or a loss of a job can cause a low-income person to fall behind on payment. Those who can no longer keep up with rent are physically removed or forced to leave their own homes. Hover over the orange icons to hear their stories.
+        Boston is one of the most expensive places to live in the United States. With the second highest average monthly rent index in the entire country, a third of renters pay more than 30 percent of their income on housing costs. Any change in income including rent increase, a medical bill or a loss of a job can cause a low-income person to fall behind on payment. Those who can no longer keep up with rent are physically removed or forced to leave their own homes. <b>Hover over the orange icons to hear their stories.</b>
     </p>
 </div>
 

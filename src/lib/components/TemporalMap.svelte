@@ -1,4 +1,4 @@
-<div id="vis-container">
+<div id="vis-container" style="--color: {highColor[vis_type]}">
     <div id="map-container">
         <div id="map" class="map"></div>
     </div>
@@ -35,7 +35,14 @@
                 max="2023"
                 step="1"
                 value="{ year }"
+                list="tickmarks"
             />
+            <datalist id="tickmarks">
+                <option value="2020" label="2020">2020</option>
+                <option value="2021" label="2021"></option>
+                <option value="2022" label="2022"></option>
+                <option value="2023" label="2023"></option>
+            </datalist>
         </div>
         
         <div id="trend-graph">
@@ -177,6 +184,7 @@
         });
 
         map.scrollZoom.disable();
+        map.addControl(new mapboxgl.NavigationControl());
 
         // Load GeoJSON data
         map.on('load', () => {
@@ -465,9 +473,9 @@
         font-size:1.25rem;
     }
 
-    #time-slider input {
+    /* #time-slider input {
         width: 100%;
-    }
+    } */
     
     /* .map-legend {
       position: absolute;
@@ -503,6 +511,57 @@
     }
     h2{
         font-size:2rem;
+    }
+
+    #slider {
+        -webkit-appearance: none;
+        width: calc(100% - 36px);
+        margin-left: 6px;
+        height: 5px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.8;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        position: relative;
+    }
+    #slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px; 
+        height: 15px;
+        background: var(--color);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        top: -8px;
+    }
+
+    input[type=range] ~ datalist {
+        display: flex;
+        justify-content: space-between;
+        top: 12px;
+        width: calc(100% - 12px*2);
+        margin: 12px*3 0;
+        padding: 0;
+        font-size: 0.5em;
+    }
+    input[type=range] ~ datalist option {
+        display: block;
+        width: 48px/2;
+        background: 0 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    input[type=range] ~ datalist option::before {
+        content: '';
+        display: block;
+        width: 1px;
+        height: 5px;
+        background: #000;
+        margin: 0 auto;
     }
 
 

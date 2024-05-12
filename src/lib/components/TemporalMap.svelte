@@ -156,6 +156,8 @@
             center: [-71.0596, 42.3101] // Center on Boston
         });
 
+        // map.scrollZoom.disable();
+
         // Load GeoJSON data
         map.on('load', () => {
             // Add the GeoJSON data to the map
@@ -254,11 +256,17 @@
                         type: 'line',
                         source: 'census-tracts',
                         paint: {
+                            'line-color': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                'rgba(0,0,0,1)', // Increase line width on hover
+                                'rgba(0,0,0,0.3)' // Default line width
+                            ],
                             'line-width': [
                                 'case',
                                 ['boolean', ['feature-state', 'hover'], false],
                                 1, // Increase line width on hover
-                                0 // Default line width
+                                0.2 // Default line width
                             ]
                         },
                         filter: ['has', 'evictions_2020']
@@ -386,7 +394,6 @@
         position: relative;
         width: 100%;
         height: 85vh;
-        margin: -8px; /* Offset the 8px margin added by default in body */
         display: flex;
     }
     #map-container {
@@ -398,7 +405,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 1rem;
+      left: 0;
       right: 0;
     }
 
@@ -409,7 +416,6 @@
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     /* .map-overlay#legend {

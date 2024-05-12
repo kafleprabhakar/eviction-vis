@@ -18,15 +18,16 @@
                     {/each}
                 </div>
             </div>
+            <i style="font-size: 12px; display: block; text-align: center; margin-top: 5px;">Eviction rates are calculated as a percentage of households with eviction filings in the tract.</i>
         </div>
-        <h2>Number of evictions in { year }</h2>
+        <h2>{ options_name[options.indexOf(vis_type)] } in <u>{ year }</u></h2>
         <div id="legend-color"></div>
         <div id="legend-label">
             <div class="legend-item" id="low-legend"></div>
             <div class="legend-item" id="high-legend"></div>
         </div>
         <div id="time-slider">
-            <h2>Year: <span id="active-year">{ year }</span></h2>
+            <h5 style="margin: 0;">Select year</h5>
             <input
                 id="slider"
                 class="row"
@@ -46,7 +47,7 @@
         </div>
         
         <div id="trend-graph">
-            Hover over the map to see the numbers. Click the census tract to see the trend.
+            <p style="padding: 15px 20px; font-style: italic;">Hover over the map to see the details for the census tract. Click the census tract to see the trend.</p>
         </div>
     </div>
 </div>
@@ -57,8 +58,7 @@
     import * as d3 from 'd3';
 
     let options = ['evictions', 'percent'];
-    const options_name = ['Eviction Risk', 'Eviction Rate'];
-	let sliderValue = 'Eviction Risk';
+    const options_name = ['Number of Evictions', 'Eviction Rate'];
     const uniqueID = Math.floor(Math.random() * 100);
 
     const lowColor = {'evictions': '#f7d654', 'percent': '#B2E6FF'};
@@ -73,14 +73,22 @@
 
     function draw_graph(data) {
         console.log({data});
-        // set the dimensions and margins of the graph
-        var margin = {top: 10, right: 30, bottom: 30, left: 60},
-            width = 200 - margin.left - margin.right,
-            height = 200 - margin.top - margin.bottom;
+        data.forEach(d => {
+            // Convert the "year" column to JavaScript Date objects
+            d.year = new Date(+d.year, 0); // Assuming "year" is stored as integer
+        });
         
         let container = document.getElementById('trend-graph');
         container.innerHTML = '';
+        // set the dimensions and margins of the graph
+        var margin = {top: 40, right: 40, bottom: 30, left: 60},
+            width = container?.offsetWidth - margin.left - margin.right,
+            height = Math.min(container?.offsetWidth, 250) - margin.top - margin.bottom;
 
+        d3.select('#trend-graph')
+            .append('div')
+            .style('text-align', 'center')
+            .html("Eviction Trend");
         // append the svg object to the body of the page
         var svg = d3.select("#trend-graph")
         .append("svg")
@@ -90,13 +98,21 @@
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
+
         // Add X axis --> it is a date format
         var x = d3.scaleTime()
         .domain(d3.extent(data, function(d) { return d.year; }))
         .range([ 0, width ]);
         svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).ticks(4));
+
+        svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", width/2)
+                .attr("y", height + 30)
+                .style("font-size", "11px")
+                .text("Year");
 
         // Add Y axis
         var y = d3.scaleLinear()
@@ -104,6 +120,14 @@
         .range([ height, 0 ]);
         svg.append("g")
         .call(d3.axisLeft(y).ticks(5));
+
+        svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 30)
+                .attr("x", - height/6)
+                .style("font-size", "11px")
+                .text("Number of eviction filings")
 
         var bisect = d3.bisector(function(d) { return d.year; }).left;
 
@@ -121,6 +145,7 @@
             .style("opacity", 0)
             .attr("text-anchor", "left")
             .attr("alignment-baseline", "middle")
+            .style("font-size", "13px");
 
         // Add the line
         svg.append("path")
@@ -163,9 +188,9 @@
             .attr("cx", x(selectedData.year))
             .attr("cy", y(selectedData.evictions))
             focusText
-            .html(selectedData.evictions + " evictions")
-            .attr("x", x(selectedData.year)+15)
-            .attr("y", y(selectedData.evictions))
+            .html(selectedData.evictions)
+            .attr("x", x(selectedData.year)+10)
+            .attr("y", y(selectedData.evictions) + 10)
             }
         function mouseout() {
             focus.style("opacity", 0)
@@ -197,6 +222,7 @@
                 });
                 // Load CSV data
                 d3.csv('/datasets/evictions.csv').then(csvData => {
+                    console.log({csvData});
                     // let max_evictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
                     // let min_evictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
                     // Update GeoJSON data with CSV data
@@ -227,10 +253,10 @@
                                     feature.properties.evictions_2023
                                 );
 
-                                feature.properties.percent_2020 = Math.round((parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
-                                feature.properties.percent_2021 = Math.round((parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
-                                feature.properties.percent_2022 = Math.round((parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
-                                feature.properties.percent_2023 = Math.round((parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2020 = Math.round((parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2021 = Math.round((parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2022 = Math.round((parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2023 = Math.round((parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
 
                                 if (!isNaN(feature.properties.percent_2020)) {
                                     max_percent = Math.max(
@@ -450,8 +476,9 @@
 
     .map-overlay {
         /* position: absolute; */
+        width: 40%;
         min-width: 200px;
-        max-width: 320px;
+        max-width: 500px;
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;
@@ -570,10 +597,15 @@
         margin: 1rem 0;
     }
 
+    .s--multi {
+        display: flex;
+    }
+
     .s--multi .group-container {
         border: none;
         padding: 0;
         white-space: nowrap;
+        margin: auto;
     }
 
     /* .s--multi legend {

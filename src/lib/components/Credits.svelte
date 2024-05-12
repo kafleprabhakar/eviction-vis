@@ -1,6 +1,6 @@
 <div class='credits-container'>
 
-    <div class='authors'> Madeline Leano, Prabhakar Kafle, Jessica Xu, Shelley Zheng | Spring 2024</div>
+    <div class='authors'> Prabhakar Kafle, Madeline Leano, Jessica Xu, Shelley Zheng | Spring 2024</div>
 
     <div class='acknowledgements'>
         <h3 class='credit-header'>Acknowledgements</h3>
@@ -10,10 +10,10 @@
 
     <div class='references'>
         <h3 class='credit-header'>References</h3>
-        <p class='credit-words'><a class='credit-link' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
-        <p class='credit-words'><a class='credit-link' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
-        <p class='credit-words'><a class='credit-link' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
-        <p class='credit-words'><a class='credit-link' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
+        <p class='credit-words'><a class='credit-link' target='_blank href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
+        <p class='credit-words'><a class='credit-link' target='_blank href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
+        <p class='credit-words'><a class='credit-link' target='_blank href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
+        <p class='credit-words'><a class='credit-link' target='_blank href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
 
         <p class='credit-words'>Placeholder</p>
         <p class='credit-words'>Placeholder</p>

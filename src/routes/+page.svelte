@@ -75,7 +75,7 @@
 
 	<!-- VIS 2 -->
 	<div class='vis-section' id='v2'>
-		<h2 class='header-title'>Eviction Rates Over Time</h2>
+		<h2 class='header-title'>Eviction Trend Over Time</h2>
 		<TemporalMap/>
 	</div>
 

@@ -3,11 +3,21 @@
         <div id="map" class="map"></div>
     </div>
     <div class="map-overlay" id="legend">
-        <div id="type-selector">
-            <input type="radio" id="evictions" name="vis-type" value="evictions" checked>
-            <label for="evictions">Eviction Numbers</label>
-            <input type="radio" id="percent" name="vis-type" value="percent">
-            <label for="percent">Eviction Rate</label>
+        <div class='slider-container'>
+            <div class="s s--multi">
+                <div role='radiogroup'
+                             class="group-container"
+                             aria-labelledby={`label-${uniqueID}`}
+                             style="font-size:1.1rem" 
+                             id={`group-${uniqueID}`}>
+                    {#each options as option, i}
+                        <input type="radio" class='slider-input' id={`${option}-${uniqueID}`} value={option} bind:group={vis_type} on:change={handleClickSlider}>
+                        <label for={`${option}-${uniqueID}`}>
+                            {options_name[i]}
+                        </label> 
+                    {/each}
+                </div>
+            </div>
         </div>
         <h2>Number of evictions in { year }</h2>
         <div id="legend-color"></div>
@@ -39,10 +49,20 @@
 	import * as mapbox from 'mapbox-gl';
     import * as d3 from 'd3';
 
-    const lowColor = '#f7d654';
-    const highColor = '#e64302';
+    let options = ['evictions', 'percent'];
+    const options_name = ['Eviction Risk', 'Eviction Rate'];
+	let sliderValue = 'Eviction Risk';
+    const uniqueID = Math.floor(Math.random() * 100);
+
+    const lowColor = {'evictions': '#f7d654', 'percent': '#B2E6FF'};
+    const highColor = {'evictions': '#e64302', 'percent': '#1636A9'};
     let year = 2020;
     let vis_type = 'evictions';
+    let max_evictions = 0;
+    let min_evictions = 0;
+    let max_percent = 0;
+    let min_percent = 0;
+    var map: mapbox.Map;
 
     function draw_graph(data) {
         console.log({data});
@@ -84,7 +104,7 @@
             .append('g')
             .append('circle')
             .style("fill", "none")
-            .attr("stroke", highColor)
+            .attr("stroke", highColor[vis_type])
             .attr('r', 3)
             .style("opacity", 0);
 
@@ -99,7 +119,7 @@
         svg.append("path")
             .datum(data)
             .attr("fill", "none")
-            .attr("stroke", highColor)
+            .attr("stroke", highColor[vis_type])
             .attr("stroke-width", 1.5)
             .attr("d", d3.line()
                 .x(function(d) { return x(d.year) })
@@ -148,7 +168,7 @@
 
     onMount(() => {
         // Initialize Mapbox map
-        const map = new mapbox.Map({
+        map = new mapbox.Map({
             container: 'map',
             accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
             style: 'mapbox://styles/mapbox/light-v10',
@@ -156,7 +176,7 @@
             center: [-71.0596, 42.3101] // Center on Boston
         });
 
-        // map.scrollZoom.disable();
+        map.scrollZoom.disable();
 
         // Load GeoJSON data
         map.on('load', () => {
@@ -171,10 +191,6 @@
                 d3.csv('/datasets/evictions.csv').then(csvData => {
                     // let max_evictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
                     // let min_evictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
-                    let max_evictions = 0;
-                    let min_evictions = 0;
-                    let max_percent = 0;
-                    let min_percent = 0;
                     // Update GeoJSON data with CSV data
                     map.getSource('census-tracts').setData({
                         type: 'FeatureCollection',
@@ -203,10 +219,10 @@
                                     feature.properties.evictions_2023
                                 );
 
-                                feature.properties.percent_2020 = parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2021 = parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2022 = parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2023 = parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['pop']) * 100;
+                                feature.properties.percent_2020 = Math.round((parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2021 = Math.round((parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2022 = Math.round((parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2023 = Math.round((parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['pop']) + Number.EPSILON) * 10000) / 100;
 
                                 if (!isNaN(feature.properties.percent_2020)) {
                                     max_percent = Math.max(
@@ -225,7 +241,11 @@
                                     );
                                 }
                                 feature.properties.description = `
-                                    <b>${feature.properties.geoid}</b>
+                                    <b>Eviction filings in census tract ${feature.properties.geoid}</b><br/>
+                                    2020: ${feature.properties.evictions_2020} households (${feature.properties.percent_2020}%)<br/>
+                                    2021: ${feature.properties.evictions_2021} households (${feature.properties.percent_2021}%)<br/>
+                                    2022: ${feature.properties.evictions_2022} households (${feature.properties.percent_2022}%)<br/>
+                                    2023: ${feature.properties.evictions_2023} households (${feature.properties.percent_2023}%)<br/>
                                 `;
                                 feature.id = feature.properties.geoid;
                             }
@@ -243,8 +263,8 @@
                                 'interpolate',
                                 ['linear'],
                                 ['get', vis_type + '_' + year],
-                                min_evictions, lowColor,
-                                max_evictions, highColor,
+                                min_evictions, lowColor[vis_type],
+                                max_evictions, highColor[vis_type],
                             ],
                             'fill-opacity': 0.9
                         },
@@ -329,37 +349,10 @@
                         ]);
                     });
 
-                    function updateMap() {
-                        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
-                        paintProperty[2][1] = vis_type + "_" + year;
-                        if (vis_type === 'percent') {
-                            paintProperty[3] = min_percent;
-                            paintProperty[5] = max_percent;
-                        } else {
-                            paintProperty[3] = min_evictions;
-                            paintProperty[5] = max_evictions;
-                        }
-                        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
-                    }
-
-                    function updateLegend() {
-                        const lowLegend = document.getElementById('low-legend');
-                        const highLegend = document.getElementById('high-legend');
-                        if (vis_type === 'percent') {
-                            lowLegend!.textContent = min_percent.toFixed(2) + '%';
-                            highLegend!.textContent = max_percent.toFixed(2) + '%';
-                        } else {
-                            lowLegend!.textContent = min_evictions.toLocaleString();
-                            highLegend!.textContent = max_evictions.toLocaleString();
-                        }
-
-                        console.log(min_percent, max_percent, min_evictions, max_evictions);
-                    }
-
                     const legend = document.getElementById('legend');
                     const legendColor = document.getElementById('legend-color');
                     // Set background of legend color to be a gradient between lowColor and highColor
-                    legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
+                    legendColor!.style.background = `linear-gradient(to right, ${lowColor[vis_type]}, ${highColor[vis_type]})`;
                     // Set text of low and high legend
                     updateLegend();
 
@@ -387,9 +380,47 @@
             });
         });
     });
+
+    function updateMap() {
+        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
+        console.log(paintProperty);
+        paintProperty[2][1] = vis_type + "_" + year;
+        if (vis_type === 'percent') {
+            paintProperty[3] = min_percent;
+            paintProperty[5] = max_percent;
+        } else {
+            paintProperty[3] = min_evictions;
+            paintProperty[5] = max_evictions;
+        }
+        paintProperty[4] = lowColor[vis_type];
+        paintProperty[6] = highColor[vis_type];
+        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
+    }
+
+    function updateLegend() {
+        const lowLegend = document.getElementById('low-legend');
+        const highLegend = document.getElementById('high-legend');
+        if (vis_type === 'percent') {
+            lowLegend!.textContent = min_percent.toFixed(2) + '%';
+            highLegend!.textContent = max_percent.toFixed(2) + '%';
+        } else {
+            lowLegend!.textContent = min_evictions.toLocaleString();
+            highLegend!.textContent = max_evictions.toLocaleString();
+        }
+        const legendColor = document.getElementById('legend-color');
+        legendColor!.style.background = `linear-gradient(to right, ${lowColor[vis_type]}, ${highColor[vis_type]})`;
+        console.log(min_percent, max_percent, min_evictions, max_evictions);
+    }
+
+    function handleClickSlider(event: Event){
+        console.log(event.target.value);
+        vis_type = event.target!.value;
+        updateMap();
+        updateLegend();
+    }
 </script>
 
-  <style>
+<style>
     #vis-container {
         position: relative;
         width: 100%;
@@ -472,5 +503,97 @@
     }
     h2{
         font-size:2rem;
+    }
+
+
+    /* Slider */
+    .slider-container {
+        margin: 1rem 0;
+    }
+
+    .s--multi .group-container {
+        border: none;
+        padding: 0;
+        white-space: nowrap;
+    }
+
+    /* .s--multi legend {
+    font-size: 2px;
+    opacity: 0;
+    position: absolute;
+    } */
+
+    .s--multi label {
+        display: inline-block;
+        line-height: 1.6;
+        position: relative;
+        z-index: 2;
+    }
+
+    .s--multi input {
+        opacity: 0;
+        position: absolute;
+    }
+
+    .slider-input:hover {
+        cursor: pointer;
+    }
+
+    .s--multi label:first-of-type {
+        padding-right: 5em;
+    }
+
+    .s--multi label:last-child {
+        margin-left: -5em;
+        padding-left: 5em;
+    }
+
+    /* .s--multi:focus-within label:first-of-type:after {
+        box-shadow: 0 0px 8px var(--accent-color);
+        border-radius: 1.5em;
+    } */
+
+    /* making the switch UI.  */
+    .s--multi label:first-of-type:before,
+    .s--multi label:first-of-type:after {
+        content: "";
+        height: 1.25em;
+        overflow: hidden;
+        pointer-events: none;
+        position: absolute;
+        vertical-align: middle;
+    }
+
+    .s--multi label:first-of-type:before {
+        border-radius: 100%;
+        z-index: 2;
+        position: absolute;
+        width: 1.2em;
+        height: 1.2em;
+        background: #fff;
+        top: 0.2em;
+        right: 1.2em;
+        transition: transform 0.3s;
+    }
+
+    .s--multi label:first-of-type:after {
+        background: var(--accent-color);
+        border-radius: 1em;
+        margin: 0 1em;
+        transition: background .2s ease-in-out;
+        width: 3em;
+        height: 1.6em;
+    }
+
+    .s--multi input:first-of-type:checked ~ label:first-of-type:after {
+        background: var(--gray);
+    }
+
+    .s--multi input:first-of-type:checked ~ label:first-of-type:before {
+        transform: translateX(-1.4em);
+    }
+
+    .s--multi input:last-of-type:checked ~ label:last-of-type {
+        z-index: 1;
     }
   </style>

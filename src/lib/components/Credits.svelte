@@ -13,6 +13,7 @@
         <p class='credit-words'><a class='credit-link' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
         <p class='credit-words'><a class='credit-link' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
         <p class='credit-words'><a class='credit-link' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
+        <p class='credit-words'><a class='credit-link' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
 
         <p class='credit-words'>Placeholder</p>
         <p class='credit-words'>Placeholder</p>

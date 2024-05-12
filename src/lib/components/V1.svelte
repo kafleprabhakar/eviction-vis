@@ -68,6 +68,7 @@
     }
     .image {
         max-width: 100%;
+        width: 30px;
         height: auto;
         margin: 0; /* Reset margin */
         padding: 0; /* Reset padding */
@@ -87,10 +88,14 @@
         line-height: 1.5;
         z-index: 999; 
     }
+    .caption{
+        display: none;
+    } 
 
     .text-container {
         display: flex;
         align-items: center;
+        padding:10px;
     }
     .text-container img {
         margin-right: 10px;
@@ -159,69 +164,177 @@
     <img class ="mapimage" src="images/bostonMap.png" alt="Boston Map">
 
     <!-- All blanks -->
-    <div class="container" style="top: 605px; left: 1225px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 800px; left: 1300px;" >
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px">
-    </div>
-    <div class="container" style="top: 620px; left: 830px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1020px; left: 720px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 780px; left: 670px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1330px; left: 1230px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1600px; left: 530px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 950px; left: 200px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1280px; left: 600px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1150px; left: 300px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
-    </div>
-    <div class="container" style="top: 1500px; left: 1050px;">
-        <img class="image" src="images/clear.png" alt="Person" style="width: 50px;">
+    <div class="container" style="top: 570px; left: 1225px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">1</p>
     </div>
 
-    <div class="container" style="top: 750px; left: 1050px;">
-        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <div class="container" style="top: 800px; left: 1300px;" >
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">2</p>
+    </div>
+    <div class="container" style="top: 620px; left: 1030px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">3</p>
+    </div>
+    <div class="container" style="top: 630px; left: 530px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">3.1</p>
+    </div>
+    <div class="container" style="top: 1050px; left: 620px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">4</p>
+    </div>
+    <div class="container" style="top: 720px; left: 670px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">5</p>
+    </div>
+    <div class="container" style="top: 800px; left: 880px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">5.1</p>
+    </div>
+    <div class="container" style="top: 1290px; left: 1130px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">6</p>
+    </div>
+    <div class="container" style="top: 1590px; left: 500px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">7</p>
+    </div>
+    <div class="container" style="top: 900px; left: 250px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">8</p>
+    </div>
+    <div class="container" style="top: 1000px; left: 380px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">8.1</p>
+    </div>
+   
+    <div class="container" style="top: 1280px; left: 570px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">9</p>
+    </div>
+    <div class="container" style="top: 1150px; left: 200px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">10</p>
+    </div>
+    <div class="container" style="top: 1350px; left: 970px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">11</p>
+    </div>
+    <div class="container" style="top: 1500px; left: 1150px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">12</p>
+    </div>
+    <div class="container" style="top: 1150px; left: 820px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">13</p>
+    </div>
+    <div class="container" style="top: 1450px; left: 670px;">
+        <img class="image" src="images/clear.png" alt="Person" >
+        <p class="caption">14</p>
+    </div>
+
+    <div class="container" style="top: 780px; left: 1120px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" >
+        <p class="caption">O1</p>
         <div class="text" style="right: calc(100% + 10px); width: 400px;">
             <div class="text-container">
-                <img src="images/domingo.png" alt="Hover Person" style="width: 200px;">
-                <p>"Fannie Mae took over my [bank] account, and sold my house to investors, who sold it to a private company. Now, alone, I’m facing eviction. This ordeal has made me suffer more than you can possibly imagine."</p>
+                <p>"Now I don't know who people think are, like you know, [who] get evicted or face homelessness, but I always paid my rent on time." - Kimberley O’Connor </p>
             </div>
         </div>
     </div>
 
-    <div class="container" style="top: 1000px; left: 450px;">
-        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <div class="container" style="top: 580px; left: 780px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O2.1</p>
         <div class="text" style="left: calc(100% + 10px); width: 400px;">
             <div class="text-container">
                 <img src="images/margarita.png" alt="Hover Person" style="width: 200px;">
-                <p>"The first time I was evicted, I was given only a week to leave. I am no young lady, but I could not afford anything but to do the moving alone. I worried about the safety of my grandson, who lived with me."</p>
+                <p>"Eviction affected me emotionally and mentally, but it fundamentally took away my sense of a home. I carry that burden with me." - Margarita</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" style="top: 850px; left: 550px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O2</p>
+        <div class="text" style="right: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <p>I was petrified and felt like the biggest delinquent in the world for not being able to pay my rent. - Kettia </p>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="top: 1170px; left: 420px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O1.2</p>
+        <div class="text" style="left: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <img src="images/dora.png" alt="Hover Person" style="width: 200px;">
+                <p>"We are trying to prove that we are honest, hard-working people, who simply can’t afford that kind of a rent increase. I hope things end for the better soon." - Dora</p>
+            </div>
+        </div>
+    </div>
+   
+    <div class="container" style="top: 950px; left: 100px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O2.2</p>
+        <div class="text" style="left: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <p>"It was like the only power and inspiration and the motivation had been taken out of me." - Whitney</p>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="top: 920px; left: 770px;">
+
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O2.3</p>
+        <div class="text" style="left: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <img src="images/domingo.png" alt="Hover Person" style="width: 200px;">
+                <p>"Now, alone, I’m facing eviction. This ordeal has made me suffer more than you can possibly imagine." - Domingo</p>
             </div>
         </div>
     </div>
 
-    <div class="container" style="top: 1400px; left: 850px;">
-        <img class="image" src="images/orange.png" alt="Orange Person" style="width: 50px;">
+    <div class="container" style="top: 1550px; left: 900px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" >
+        <p class="caption">O3</p>
         <div class="text" style="right: calc(100% + 10px); width: 400px;">
             <div class="text-container">
-                <img src="images/dora.png" alt="Hover Person" style="width: 200px;">
-                <p>"A little over a year ago, all six families living in my building were given eviction notices. We were given 30 days to leave. I felt lost and scared."</p>
+                <p>"My medical conditions make having a house a necessity. The prospect of being homeless terrifies me. I’m afraid I won’t survive homelessness." - Seren</p>
             </div>
         </div>
     </div>
+    <div class="container" style="top: 1330px; left: 1330px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O2.1</p>
+        <div class="text" style="right: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <p>"We are trying to find a new place to live, but no one will rent to us due to us having rent arrears and a pending eviction. I am not sure what will happen to my family. We have a young son also." - Lisa</p>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="top: 1600px; left: 230px;">
+        <img class="image" src="images/orange.png" alt="Orange Person">
+        <p class="caption">O3.2</p>
+        <div class="text" style="left: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <p>I don’t know where to turn for help. I lose sleep every night worrying about what I’m going to do." - Marlaina</p>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="top: 1300px; left: 750px;">
+        <img class="image" src="images/orange.png" alt="Orange Person" >
+        <p class="caption">O3.3</p>
+        <div class="text" style="right: calc(100% + 10px); width: 400px;">
+            <div class="text-container">
+                <p>" If you have been evicted, it is extremely difficult to find housing." - Kelly</p>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class = "left-block">
         <p>In Boston, around 80% of evictions are reportedly filed for non-payment of rent</p>

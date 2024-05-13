@@ -1,0 +1,17 @@
+,is_ptf_corp,judge_cat,def_att,count
+0,False,Charged,False,235
+1,False,Charged,True,9
+2,False,Default,False,75
+3,False,Default,True,1
+4,False,Dismissal,False,104
+5,False,Dismissal,True,12
+6,False,Other,False,50
+7,False,Other,True,7
+8,True,Charged,False,901
+9,True,Charged,True,38
+10,True,Default,False,403
+11,True,Default,True,8
+12,True,Dismissal,False,590
+13,True,Dismissal,True,33
+14,True,Other,False,113
+15,True,Other,True,21

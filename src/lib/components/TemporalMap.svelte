@@ -1,23 +1,33 @@
-
-<div id="vis-container">
+<div id="vis-container" style="--color: {highColor[vis_type]}">
     <div id="map-container">
         <div id="map" class="map"></div>
     </div>
     <div class="map-overlay" id="legend">
-        <div id="type-selector">
-            <input type="radio" id="evictions" name="vis-type" value="evictions" checked>
-            <label for="evictions">Eviction Numbers</label>
-            <input type="radio" id="percent" name="vis-type" value="percent">
-            <label for="percent">Eviction Rate</label>
+        <div class='slider-container'>
+            <div class="s s--multi">
+                <div role='radiogroup'
+                             class="group-container"
+                             aria-labelledby={`label-${uniqueID}`}
+                             style="font-size:1.1rem" 
+                             id={`group-${uniqueID}`}>
+                    {#each options as option, i}
+                        <input type="radio" class='slider-input' id={`${option}-${uniqueID}`} value={option} bind:group={vis_type} on:change={handleClickSlider}>
+                        <label for={`${option}-${uniqueID}`}>
+                            {options_name[i]}
+                        </label> 
+                    {/each}
+                </div>
+            </div>
+            <i style="font-size: 12px; display: block; text-align: center; margin-top: 5px;">Eviction rates are calculated as a percentage of households with eviction filings in the tract.</i>
         </div>
-        <h2>Number of evictions in { year }</h2>
+        <h2>{ options_name[options.indexOf(vis_type)] } in <u>{ year }</u></h2>
         <div id="legend-color"></div>
         <div id="legend-label">
             <div class="legend-item" id="low-legend"></div>
             <div class="legend-item" id="high-legend"></div>
         </div>
         <div id="time-slider">
-            <h2>Year: <span id="active-year">{ year }</span></h2>
+            <h5 style="margin: 0;">Select year</h5>
             <input
                 id="slider"
                 class="row"
@@ -26,11 +36,18 @@
                 max="2023"
                 step="1"
                 value="{ year }"
+                list="tickmarks"
             />
+            <datalist id="tickmarks">
+                <option value="2020" label="2020">2020</option>
+                <option value="2021" label="2021"></option>
+                <option value="2022" label="2022"></option>
+                <option value="2023" label="2023"></option>
+            </datalist>
         </div>
         
         <div id="trend-graph">
-            Hover over the map to see the numbers. Click the census tract to see the trend.
+            <p style="padding: 15px 20px; font-style: italic;">Hover over the map to see the details for the census tract. Click the census tract to see the trend.</p>
         </div>
     </div>
 </div>
@@ -39,23 +56,39 @@
     import { onMount, onDestroy } from "svelte";
 	import * as mapbox from 'mapbox-gl';
     import * as d3 from 'd3';
-    // import type { TemporalMap } from "./temporalMap.type";
 
-    const lowColor = '#f7d654';
-    const highColor = '#e64302';
+    let options = ['evictions', 'percent'];
+    const options_name = ['Number of Evictions', 'Eviction Rate'];
+    const uniqueID = Math.floor(Math.random() * 100);
+
+    const lowColor = {'evictions': '#f7d654', 'percent': '#B2E6FF'};
+    const highColor = {'evictions': '#e64302', 'percent': '#1636A9'};
     let year = 2020;
     let vis_type = 'evictions';
+    let max_evictions = 0;
+    let min_evictions = 0;
+    let max_percent = 0;
+    let min_percent = 0;
+    var map: mapbox.Map;
 
     function draw_graph(data) {
         console.log({data});
-        // set the dimensions and margins of the graph
-        var margin = {top: 10, right: 30, bottom: 30, left: 60},
-            width = 200 - margin.left - margin.right,
-            height = 200 - margin.top - margin.bottom;
+        data.forEach(d => {
+            // Convert the "year" column to JavaScript Date objects
+            d.year = new Date(+d.year, 0); // Assuming "year" is stored as integer
+        });
         
         let container = document.getElementById('trend-graph');
         container.innerHTML = '';
+        // set the dimensions and margins of the graph
+        var margin = {top: 40, right: 40, bottom: 30, left: 60},
+            width = container?.offsetWidth - margin.left - margin.right,
+            height = Math.min(container?.offsetWidth, 250) - margin.top - margin.bottom;
 
+        d3.select('#trend-graph')
+            .append('div')
+            .style('text-align', 'center')
+            .html("Eviction Trend");
         // append the svg object to the body of the page
         var svg = d3.select("#trend-graph")
         .append("svg")
@@ -65,13 +98,21 @@
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
+
         // Add X axis --> it is a date format
         var x = d3.scaleTime()
         .domain(d3.extent(data, function(d) { return d.year; }))
         .range([ 0, width ]);
         svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).ticks(4));
+
+        svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", width/2)
+                .attr("y", height + 30)
+                .style("font-size", "11px")
+                .text("Year");
 
         // Add Y axis
         var y = d3.scaleLinear()
@@ -80,13 +121,21 @@
         svg.append("g")
         .call(d3.axisLeft(y).ticks(5));
 
+        svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left + 30)
+                .attr("x", - height/6)
+                .style("font-size", "11px")
+                .text("Number of eviction filings")
+
         var bisect = d3.bisector(function(d) { return d.year; }).left;
 
         var focus = svg
             .append('g')
             .append('circle')
             .style("fill", "none")
-            .attr("stroke", highColor)
+            .attr("stroke", highColor[vis_type])
             .attr('r', 3)
             .style("opacity", 0);
 
@@ -96,12 +145,13 @@
             .style("opacity", 0)
             .attr("text-anchor", "left")
             .attr("alignment-baseline", "middle")
+            .style("font-size", "13px");
 
         // Add the line
         svg.append("path")
             .datum(data)
             .attr("fill", "none")
-            .attr("stroke", highColor)
+            .attr("stroke", highColor[vis_type])
             .attr("stroke-width", 1.5)
             .attr("d", d3.line()
                 .x(function(d) { return x(d.year) })
@@ -138,9 +188,9 @@
             .attr("cx", x(selectedData.year))
             .attr("cy", y(selectedData.evictions))
             focusText
-            .html(selectedData.evictions + " evictions")
-            .attr("x", x(selectedData.year)+15)
-            .attr("y", y(selectedData.evictions))
+            .html(selectedData.evictions)
+            .attr("x", x(selectedData.year)+10)
+            .attr("y", y(selectedData.evictions) + 10)
             }
         function mouseout() {
             focus.style("opacity", 0)
@@ -150,13 +200,17 @@
 
     onMount(() => {
         // Initialize Mapbox map
-        const map = new mapbox.Map({
+        map = new mapbox.Map({
             container: 'map',
             accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
             style: 'mapbox://styles/mapbox/light-v10',
             zoom: 11,
+            minZoom: 11, 
             center: [-71.0596, 42.3101] // Center on Boston
         });
+
+        map.scrollZoom.disable();
+        map.addControl(new mapboxgl.NavigationControl());
 
         // Load GeoJSON data
         map.on('load', () => {
@@ -169,12 +223,9 @@
                 });
                 // Load CSV data
                 d3.csv('/datasets/evictions.csv').then(csvData => {
+                    console.log({csvData});
                     // let max_evictions = d3.max(csvData, d => parseFloat(d['2020_eviction']));
                     // let min_evictions = d3.min(csvData, d => parseFloat(d['2020_eviction']));
-                    let max_evictions = 0;
-                    let min_evictions = 0;
-                    let max_percent = 0;
-                    let min_percent = 0;
                     // Update GeoJSON data with CSV data
                     map.getSource('census-tracts').setData({
                         type: 'FeatureCollection',
@@ -203,10 +254,10 @@
                                     feature.properties.evictions_2023
                                 );
 
-                                feature.properties.percent_2020 = parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2021 = parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2022 = parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['pop']) * 100;
-                                feature.properties.percent_2023 = parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['pop']) * 100;
+                                feature.properties.percent_2020 = Math.round((parseFloat(evictionData['2020_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2021 = Math.round((parseFloat(evictionData['2021_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2022 = Math.round((parseFloat(evictionData['2022_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
+                                feature.properties.percent_2023 = Math.round((parseFloat(evictionData['2023_eviction']) / parseFloat(evictionData['hh']) + Number.EPSILON) * 10000) / 100;
 
                                 if (!isNaN(feature.properties.percent_2020)) {
                                     max_percent = Math.max(
@@ -225,7 +276,11 @@
                                     );
                                 }
                                 feature.properties.description = `
-                                    <b>${feature.properties.geoid}</b>
+                                    <b>Eviction filings in census tract ${feature.properties.geoid}</b><br/>
+                                    2020: ${feature.properties.evictions_2020} households (${feature.properties.percent_2020}%)<br/>
+                                    2021: ${feature.properties.evictions_2021} households (${feature.properties.percent_2021}%)<br/>
+                                    2022: ${feature.properties.evictions_2022} households (${feature.properties.percent_2022}%)<br/>
+                                    2023: ${feature.properties.evictions_2023} households (${feature.properties.percent_2023}%)<br/>
                                 `;
                                 feature.id = feature.properties.geoid;
                             }
@@ -243,8 +298,8 @@
                                 'interpolate',
                                 ['linear'],
                                 ['get', vis_type + '_' + year],
-                                min_evictions, lowColor,
-                                max_evictions, highColor,
+                                min_evictions, lowColor[vis_type],
+                                max_evictions, highColor[vis_type],
                             ],
                             'fill-opacity': 0.9
                         },
@@ -256,11 +311,17 @@
                         type: 'line',
                         source: 'census-tracts',
                         paint: {
+                            'line-color': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                'rgba(0,0,0,1)', // Increase line width on hover
+                                'rgba(0,0,0,0.3)' // Default line width
+                            ],
                             'line-width': [
                                 'case',
                                 ['boolean', ['feature-state', 'hover'], false],
                                 1, // Increase line width on hover
-                                0 // Default line width
+                                0.2 // Default line width
                             ]
                         },
                         filter: ['has', 'evictions_2020']
@@ -323,37 +384,10 @@
                         ]);
                     });
 
-                    function updateMap() {
-                        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
-                        paintProperty[2][1] = vis_type + "_" + year;
-                        if (vis_type === 'percent') {
-                            paintProperty[3] = min_percent;
-                            paintProperty[5] = max_percent;
-                        } else {
-                            paintProperty[3] = min_evictions;
-                            paintProperty[5] = max_evictions;
-                        }
-                        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
-                    }
-
-                    function updateLegend() {
-                        const lowLegend = document.getElementById('low-legend');
-                        const highLegend = document.getElementById('high-legend');
-                        if (vis_type === 'percent') {
-                            lowLegend!.textContent = min_percent.toFixed(2) + '%';
-                            highLegend!.textContent = max_percent.toFixed(2) + '%';
-                        } else {
-                            lowLegend!.textContent = min_evictions.toLocaleString();
-                            highLegend!.textContent = max_evictions.toLocaleString();
-                        }
-
-                        console.log(min_percent, max_percent, min_evictions, max_evictions);
-                    }
-
                     const legend = document.getElementById('legend');
                     const legendColor = document.getElementById('legend-color');
                     // Set background of legend color to be a gradient between lowColor and highColor
-                    legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
+                    legendColor!.style.background = `linear-gradient(to right, ${lowColor[vis_type]}, ${highColor[vis_type]})`;
                     // Set text of low and high legend
                     updateLegend();
 
@@ -381,14 +415,51 @@
             });
         });
     });
+
+    function updateMap() {
+        const paintProperty = map.getPaintProperty('census-tracts', 'fill-color');
+        console.log(paintProperty);
+        paintProperty[2][1] = vis_type + "_" + year;
+        if (vis_type === 'percent') {
+            paintProperty[3] = min_percent;
+            paintProperty[5] = max_percent;
+        } else {
+            paintProperty[3] = min_evictions;
+            paintProperty[5] = max_evictions;
+        }
+        paintProperty[4] = lowColor[vis_type];
+        paintProperty[6] = highColor[vis_type];
+        map.setPaintProperty('census-tracts', 'fill-color', paintProperty);
+    }
+
+    function updateLegend() {
+        const lowLegend = document.getElementById('low-legend');
+        const highLegend = document.getElementById('high-legend');
+        if (vis_type === 'percent') {
+            lowLegend!.textContent = min_percent.toFixed(2) + '%';
+            highLegend!.textContent = max_percent.toFixed(2) + '%';
+        } else {
+            lowLegend!.textContent = min_evictions.toLocaleString();
+            highLegend!.textContent = max_evictions.toLocaleString();
+        }
+        const legendColor = document.getElementById('legend-color');
+        legendColor!.style.background = `linear-gradient(to right, ${lowColor[vis_type]}, ${highColor[vis_type]})`;
+        console.log(min_percent, max_percent, min_evictions, max_evictions);
+    }
+
+    function handleClickSlider(event: Event){
+        console.log(event.target.value);
+        vis_type = event.target!.value;
+        updateMap();
+        updateLegend();
+    }
 </script>
 
-  <style>
+<style>
     #vis-container {
         position: relative;
         width: 100%;
-        height: 100vh;
-        margin: -8px; /* Offset the 8px margin added by default in body */
+        height: 85vh;
         display: flex;
     }
     #map-container {
@@ -406,18 +477,18 @@
 
     .map-overlay {
         /* position: absolute; */
+        width: 40%;
         min-width: 200px;
-        max-width: 320px;
+        max-width: 500px;
         background-color: white;
         padding: 8px 16px;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .map-overlay#legend {
-        /* top: 16px;
-        right: 16px; */
-    }
+    /* .map-overlay#legend {
+        top: 16px;
+        right: 16px;
+    } */
 
     #legend-color {
         height: 20px;
@@ -430,11 +501,11 @@
         font-size:1.25rem;
     }
 
-    #time-slider input {
+    /* #time-slider input {
         width: 100%;
-    }
+    } */
     
-    .map-legend {
+    /* .map-legend {
       position: absolute;
       bottom: 40px;
       right: 40px;
@@ -442,7 +513,7 @@
       padding: 16px;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    } */
 
     .legend-item {
       display: flex;
@@ -451,7 +522,7 @@
       font-size:1.25rem;
     }
 
-    .legend-color {
+    /* .legend-color {
       width: 20px;
       height: 20px;
       margin-right: 8px;
@@ -459,7 +530,7 @@
 
     .legend-label {
       font-size: 14px;
-    }
+    } */
     #trend-graph {
         font-size:1.2rem;
     }
@@ -468,5 +539,153 @@
     }
     h2{
         font-size:2rem;
+    }
+
+    #slider {
+        -webkit-appearance: none;
+        width: calc(100% - 36px);
+        margin-left: 6px;
+        height: 5px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.8;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        position: relative;
+    }
+    #slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px; 
+        height: 15px;
+        background: var(--color);
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        top: -8px;
+    }
+
+    input[type=range] ~ datalist {
+        display: flex;
+        justify-content: space-between;
+        top: 12px;
+        width: calc(100% - 12px*2);
+        margin: 12px*3 0;
+        padding: 0;
+        font-size: 0.5em;
+    }
+    input[type=range] ~ datalist option {
+        display: block;
+        width: 48px/2;
+        background: 0 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    input[type=range] ~ datalist option::before {
+        content: '';
+        display: block;
+        width: 1px;
+        height: 5px;
+        background: #000;
+        margin: 0 auto;
+    }
+
+
+    /* Slider */
+    .slider-container {
+        margin: 1rem 0;
+    }
+
+    .s--multi {
+        display: flex;
+    }
+
+    .s--multi .group-container {
+        border: none;
+        padding: 0;
+        white-space: nowrap;
+        margin: auto;
+    }
+
+    /* .s--multi legend {
+    font-size: 2px;
+    opacity: 0;
+    position: absolute;
+    } */
+
+    .s--multi label {
+        display: inline-block;
+        line-height: 1.6;
+        position: relative;
+        z-index: 2;
+    }
+
+    .s--multi input {
+        opacity: 0;
+        position: absolute;
+    }
+
+    .slider-input:hover {
+        cursor: pointer;
+    }
+
+    .s--multi label:first-of-type {
+        padding-right: 5em;
+    }
+
+    .s--multi label:last-child {
+        margin-left: -5em;
+        padding-left: 5em;
+    }
+
+    /* .s--multi:focus-within label:first-of-type:after {
+        box-shadow: 0 0px 8px var(--accent-color);
+        border-radius: 1.5em;
+    } */
+
+    /* making the switch UI.  */
+    .s--multi label:first-of-type:before,
+    .s--multi label:first-of-type:after {
+        content: "";
+        height: 1.25em;
+        overflow: hidden;
+        pointer-events: none;
+        position: absolute;
+        vertical-align: middle;
+    }
+
+    .s--multi label:first-of-type:before {
+        border-radius: 100%;
+        z-index: 2;
+        position: absolute;
+        width: 1.2em;
+        height: 1.2em;
+        background: #fff;
+        top: 0.2em;
+        right: 1.2em;
+        transition: transform 0.3s;
+    }
+
+    .s--multi label:first-of-type:after {
+        background: var(--accent-color);
+        border-radius: 1em;
+        margin: 0 1em;
+        transition: background .2s ease-in-out;
+        width: 3em;
+        height: 1.6em;
+    }
+
+    .s--multi input:first-of-type:checked ~ label:first-of-type:after {
+        background: var(--gray);
+    }
+
+    .s--multi input:first-of-type:checked ~ label:first-of-type:before {
+        transform: translateX(-1.4em);
+    }
+
+    .s--multi input:last-of-type:checked ~ label:last-of-type {
+        z-index: 1;
     }
   </style>

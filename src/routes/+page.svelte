@@ -1,208 +1,263 @@
-<!-- js starts here -->
-<script>
-	import { onMount, onDestroy } from "svelte";
-	import * as mapbox from 'mapbox-gl';
+<script lang="ts">
+    import V1 from "$lib/components/V1.svelte";
+	import TemporalMap from '$lib/components/TemporalMap.svelte';
+	import CorpLineChart from '$lib/components/CorpLineChart.svelte';
+    import EvictionJudgement from '$lib/components/EvictionJudgement.svelte';
+	import V4 from "$lib/components/V4.svelte";
+	import V5 from "$lib/components/V5.svelte";
+	import V6 from "$lib/components/V6.svelte";
+	import Credits from "$lib/components/Credits.svelte";
+	import { onMount, onDestroy } from 'svelte';
 
-	let map;
-	let mapContainer;
-	let lng, lat, zoom;
-
-	lng = -74.0059;
-	lat = 40.7128;
-	zoom = 12;
-
-	onMount(() => {
-  	const initialState = { lng: lng, lat: lat, zoom: zoom };
-
-  	map = new mapbox.Map({
-		container: mapContainer,
-		accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
-		style: `mapbox://styles/mapbox/light-v11`,
-		center: [initialState.lng, initialState.lat],
-		zoom: initialState.zoom,
-		});
-
-	map.on('load', () => {
-        let filterHour = ['==', ['number', ['get', 'Hour']], 12];
-        let filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
-
-        map.addLayer({
-          id: 'collisions',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: 'src/datasets/collisions1601.geojson' // replace this with the url of your own geojson
-          },
-          paint: {
-            'circle-radius': [
-              'interpolate',
-              ['linear'],
-              ['number', ['get', 'Casualty']],
-              0,
-              4,
-              5,
-              24
-            ],
-            'circle-color': [
-              'interpolate',
-              ['linear'],
-              ['number', ['get', 'Casualty']],
-              0,
-              '#2DC4B2',
-              1,
-              '#3BB3C3',
-              2,
-              '#669EC4',
-              3,
-              '#8B88B6',
-              4,
-              '#A2719B',
-              5,
-              '#AA5E79'
-            ],
-            'circle-opacity': 0.8
-          },
-          'filter': ['all', filterHour, filterDay]
-        });
-
-	// update hour filter when the slider is dragged
-	document.getElementById('slider').addEventListener('input', (event) => {
-		const hour = parseInt(event.target.value);
-		// update the map
-		filterHour = ['==', ['number', ['get', 'Hour']], hour];
-		map.setFilter('collisions', ['all', filterHour, filterDay]);
-
-		// converting 0-23 hour to AMPM format
-		const ampm = hour >= 12 ? 'PM' : 'AM';
-		const hour12 = hour % 12 ? hour % 12 : 12;
-
-		// update text in the UI
-		document.getElementById('active-hour').innerText = hour12 + ampm;
-	});
-
-    document.getElementById('filters').addEventListener('change', (event) => {
-		const day = event.target.value;
-		// update the map filter
-		if (day === 'all') {
-			filterDay = ['!=', ['string', ['get', 'Day']], 'placeholder'];
-		} else if (day === 'weekday') {
-			filterDay = [
-			'match',
-			['get', 'Day'],
-			['Sat', 'Sun'],
-			false,
-			true
-			];
-		} else if (day === 'weekend') {
-			filterDay = [
-			'match',
-			['get', 'Day'],
-			['Sat', 'Sun'],
-			true,
-			false
-			];
-		} else {
-			console.error('error');
+	function scrollTo(elementId: string) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+	
+	let currentSection = '';
+    // Set the current section on page load
+    onMount(() => {
+        currentSection = window.location.hash.substring(1); // Remove '#' from hash
+		if (currentSection === '') {
+			currentSection = 'v1';
 		}
-		map.setFilter('collisions', ['all', filterHour, filterDay]);
-          });
-      });
-		
-	});
+		// console.log("hi", currentSection);
+    });
 
-	onDestroy(() => {
-		// map.remove();
-	});
+	const updateCurrentSection = () => {
+		const sections = document.querySelectorAll('.vis-section');
+		let minDistance = Number.MAX_SAFE_INTEGER;
+		let nearestSection = '';
+		sections.forEach(section => {
+			const distance = Math.abs(section.getBoundingClientRect().top);
+			console.log("distance", distance);
+			if (distance < minDistance) {
+				minDistance = distance;
+				nearestSection = section.id;
+			}
+		});
+		currentSection = nearestSection;
+	};
+
+	if (typeof window !== 'undefined') {
+		window.addEventListener('scroll', updateCurrentSection);
+
+		// Cleanup listener on component destruction
+		onDestroy(() => {
+			window.removeEventListener('scroll', updateCurrentSection);
+		});
+	}
 </script>
 
-<!-- html starts here -->
-<h1>Visualization Proof of Concept</h1>
-<div class="map-wrap">
-	<div class="map" bind:this={mapContainer} />
+<div class='sidebar'>
+    <!-- Sidebar navigation links -->
+    <ul class="sidebar-nav">
+        <li class='scroll-link'><a on:click={() => scrollTo('v1')}><svg width="100" height="50"><circle class:selected={currentSection === 'v1'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v2')}><svg width="100" height="50"><circle class:selected={currentSection === 'v2'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v3')}><svg width="100" height="50"><circle class:selected={currentSection === 'v3'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+        <li class='scroll-link'><a on:click={() => scrollTo('v4')}><svg width="100" height="50"><circle class:selected={currentSection === 'v4'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+		<li class='scroll-link'><a on:click={() => scrollTo('v5')}><svg width="100" height="50"><circle class:selected={currentSection === 'v5'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+		<li class='scroll-link'><a on:click={() => scrollTo('v6')}><svg width="100" height="50"><circle class:selected={currentSection === 'v6'} class='scroll-circle' cx="20" cy="20" r="10" fill="#363533"></circle></svg></a></li>
+	</ul>
 </div>
 
-<div id="console">
-	<h1>Motor vehicle collisions</h1>
-	<p>Data:
-		<a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Motor-Vehicle-Collisions/h9gi-nx95">
-		Motor vehicle collision injuries and death
-		</a>
-		in NYC, Jan 2016
-	</p>
-		
-	<div class="session">
-		<h2>Casualty</h2>
-		<div class="row colors"></div>
-		<div class="row labels">
-			<div class="label">0</div>
-			<div class="label">1</div>
-			<div class="label">2</div>
-			<div class="label">3</div>
-			<div class="label">4</div>
-			<div class="label">5+</div>
-		</div>
+<div class='everything'>
+	<!-- VIS 1 -->
+	<div class='vis-section' id="v1">
+		<header class='header-title'>
+			<h1 class='first-title'>EVICTIONS IN BOSTON</h1>
+		</header>
+		<V1/>		
 	</div>
 
-	<div class="session">
-		<h2>Hour: <label id="active-hour">12PM</label></h2>
-		<input
-		id="slider"
-		class="row"
-		type="range"
-		min="0"
-		max="23"
-		step="1"
-		value="12"
-		/>
+
+	<!-- VIS 2 -->
+	<div class='vis-section' id='v2'>
+		<h2 class='header-title'>Eviction Trend Over Time</h2>
+		<TemporalMap/>
 	</div>
 
-	<div class="session">
-		<h2>Day of the week</h2>
-		<div class="row" id="filters">
-		<input id="all" type="radio" name="toggle" value="all" checked="checked" />
-		<label for="all">All</label>
-		<input id="weekday" type="radio" name="toggle" value="weekday" />
-		<label for="weekday">Weekday</label>
-		<input id="weekend" type="radio" name="toggle" value="weekend" />
-		<label for="weekend">Weekend</label>
+	<!-- VIS 3 -->
+	<div class='vis-section' id="v3">
+		<div class='vis-spacer1'>
+			<h2 class='who'>BUT WHO IS ISSUING THESE EVICTIONS?</h2>
 		</div>
+		<h2 class='header-title'>Corporate Evictions</h2>
+		<CorpLineChart />
+		<EvictionJudgement />
 	</div>
+
+	<div class='vis-spacer2'>
+		<h3 class='toWho'>Who Are These Evictions Impacting?</h3>
+		<p style='color:#403E3A'> While Boston holds a reputation for its diversity and plethora of vibrant
+			neighborhoods, there exists a troubling pattern of inequality within the area, particularly
+			concerning eviction rates among minority-heavy communities. The city
+			boasts a rich tapestry of cultures and identities, however certain neighborhoods
+			with <b>higher minority populations often bear the brunt of eviction crises</b>
+			compared to those that boast a higher White or Asian population. This disparity
+			underscores systemic issues of housing discrimination, economic disparity,
+			and unequal access to resources. Efforts such as community outreach programs and policy initiatives
+			attempt to address these disparities, but the persistent prevalence of evictions in minority-heavy
+			neighborhoods highlights <b>the vital need for comprehensive and equitable
+			solutions</b> to ensure fair and just housing opportunities for all residents of
+			Boston.</p>
+	</div>
+
+	<!-- VIS 4 -->
+	<div class='vis-section' id="v4">
+		<V4/>
+	</div>
+
+
+	<!-- VIS 5 -->
+	<div class='vis-section' id="v5">
+		<h2 class='header-title5'>What If It Was You?</h2>
+		<V5/>
+	</div>
+
+	<!-- Resources -->
+	<div class='vis-section' id="v6">
+		<h2 class='header-title5'>What Can We Do?</h2>
+		<V6/>
+	</div>
+
 </div>
 
-<!-- css starts here -->
+<div class='footer'>
+	<Credits/>
+</div>
+
 <style>
-	.map {
-		position: absolute;
-		width: 100%;
-		height: 100%;
+	.everything {
+		display: flex;
+		flex-direction: column;
 	}
 
-	#console {
-		position: absolute;
-		width: 240px;
-		margin: 10px;
-		padding: 10px 20px;
-		background-color: white;
+	.scroll-circle:hover {
+		fill:#ED5701;
+		cursor: pointer;
 	}
 
-	.session {
-  		margin-bottom: 20px;
+    .sidebar {
+		z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100%;
+        background-color: none;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+    }
+
+    .sidebar-nav {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* .sidebar-nav li {
+        margin-bottom: 10px;
+    } */
+
+    .sidebar-nav a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+    }
+
+    .selected {
+        /* fill: #ff0;  */
+		fill: #ED5701;
+    }
+
+	.first-title{
+		letter-spacing:0.2rem;
 	}
 
-	.row {
-		height: 12px;
-		width: 100%;
+	.header-title{
+		align-self: center;
 	}
 
-	.colors {
-		background: linear-gradient(to right, #2dc4b2, #3bb3c3, #669ec4, #8b88b6, #a2719b, #aa5e79);
-		margin-bottom: 5px;
+	.header-title5{
+		align-self: center;
+		margin-bottom: 2.5rem;
 	}
 
-	.label {
-		width: 15%;
-		display: inline-block;
+	#v1 {
+		margin-bottom: 30rem;
+	}
+
+	#v2 {
+		margin-bottom: 15rem;
+	}
+
+	#v3 {
+		margin-bottom: 12rem;
+	}
+
+	#v4 {
+		margin-bottom: 15rem;
+	}
+
+	#v5 {
+		margin-bottom: 8rem;
+	}
+
+	#v6 {
+		margin-bottom: 8rem;
+	}
+
+	.vis-section {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+
+	.who {
+		align-self: center;
+		background-color: #feb64a;
+		color: #F8F7F5;
+		padding: 7rem;
+		font-size: 4rem;
 		text-align: center;
+		margin-bottom: 10rem;
+		letter-spacing: .2rem;
+	}
+
+	.vis-spacer2 {
+		background-color: #feb64a;
+		color: #F8F7F5;
+		align-self: center;
+		display: flex;
+		flex-direction: column;
+		padding: 5.5rem;
+		/* padding-right: 10rem;
+		padding-left: 10rem; */
+		margin-bottom: 5rem;
+		text-align: center;
+	}
+
+	.toWho {
+		color: #F8F7F5;
+		margin: 0.5rem;
+		font-size: 3rem;
+	}
+
+	.footer {
+		background-color: #a9a9a9;
+		color: #F8F7F5;
+		width:100%;
+		position:absolute;
+		left:0; 
+		overflow-x: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		outline:none;
 	}
 
 </style>

@@ -199,7 +199,7 @@ face more evictions. It is more common for someone who is Hispanic or Black in t
 	}
 
 	#v3 {
-		margin-bottom: 18rem;
+		margin-bottom: 12rem;
 	}
 
 	#v4 {

@@ -102,7 +102,10 @@
 			attempt to address these disparities, but the persistent prevalence of evictions in minority-heavy
 			neighborhoods highlights <b>the vital need for comprehensive and equitable
 			solutions</b> to ensure fair and just housing opportunities for all residents of
-			Boston.</p>
+			Boston. Below you will be able to see 4 different demographics in the Boston area, and the correlation between percentage of evictions in each neighborhood against percentage
+		of the demographic in each neighborhood. You will be able to see an upward trend for White and Asian populations while there will be
+	a downward trend for Black and Hispanic Populations. This shows that neighborhoods that are populated with more minorities and those that
+face more evictions. It is more common for someone who is Hispanic or Black in the Boston area to be evicted than someone who is White or Asian.</p>
 	</div>
 
 	<!-- VIS 4 -->

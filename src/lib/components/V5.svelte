@@ -94,6 +94,7 @@
     let csvData: any; 
     let overallMin = 0.03; 
     let overallMax = 14.12; 
+    let corporateData: any; 
     
     const geoJsonDataRates = { type: 'FeatureCollection', features: {}}; // GeoJSON data for Boston neighborhoods
     const availableNeighborhoods = ['Roslindale', 'Jamaica Plain', 
@@ -165,10 +166,21 @@
         const legendColor = document.getElementById('v5-legend-color');
         legendColor!.style.background = `linear-gradient(to right, ${lowColor}, ${highColor})`;
     }
+
+    function getCorporate(neighborhood: string): string{
+        let ownership = 0;
+        corporateData.forEach(row => {
+            if (row["Neighborhood"] === neighborhood && row['Year'] === '2024') {
+                ownership = parseFloat(row["corp_own_rate"]) * 100;
+            }
+        });
+        return `${ownership}`;
+    }
   
     onMount(async () => {
         // console.log("mount", sliderValue);
         csvData = await d3.csv('/datasets/Eviction_Filings_Boston_Neighborhood_Data.csv');
+        corporateData = await d3.csv('/datasets/Change_Corporate.csv');
 
         await d3.json('/datasets/Boston_Neighborhoods.geojson').then(data => {
 
@@ -312,8 +324,8 @@
             filteredData.forEach(row => {
                 geoJsonDataRates.features.forEach(feature => {
                     const calcRate = feature.properties.calc_rate;
-        
-                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Eviction Risk: ${calcRate.toFixed(2)}%</p>`;
+                    const corporateOwnership = getCorporate(feature.properties.Name);
+                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Eviction Risk: ${calcRate.toFixed(2)}%</p><p>Corporate Ownership Rate: ${corporateOwnership}%</p>`;
 
                 });
             });
@@ -411,8 +423,10 @@
                     const avgRent = feature.properties.avg_rent;
                     const medianIncome = feature.properties.median_income;
                     const percentBurden = feature.properties.percent_burden;
+                    const corporateOwnership = getCorporate(feature.properties.Name);
+
         
-                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Selected Income Burden: ${burden.toFixed(2)}%</p><p>Average Rent: $${avgRent}</p><p>Median Income: $${medianIncome}</p><p>Overall Percent Households with Rent Burden: ${percentBurden.toFixed(2)}%</p>`;
+                    feature.properties.description = `<p>Neighborhood: ${feature.properties.Name}</p><p>Selected Income Burden: ${burden.toFixed(2)}%</p><p>Average Rent: $${avgRent}</p><p>Median Income: $${medianIncome}</p><p>Overall Percent Households with Rent Burden: ${percentBurden.toFixed(2)}%</p><p>Corporate Ownership Rate: ${corporateOwnership}%</p>`;
 
                 });
             });

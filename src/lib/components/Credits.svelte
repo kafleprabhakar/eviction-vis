@@ -10,20 +10,38 @@
 
     <div class='references'>
         <h3 class='credit-header'>References</h3>
-        <p class='credit-words'><a class='credit-link' target='_blank' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
-        <p class='credit-words'><a class='credit-link' target='_blank' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
-        <p class='credit-words'><a class='credit-link' target='_blank' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
-        <p class='credit-words'><a class='credit-link' target='_blank' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
+        <div class='reference-links'>
+            <div class='reference-cluster'>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
+            </div>
 
-        <p class='credit-words'>Placeholder</p>
-        <p class='credit-words'>Placeholder</p>
-        <p class='credit-words'>Placeholder</p>
+            <div class='reference-cluster'>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/property-assessment'>Boston Property Assessment</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/census-2020-block-group-neighborhoods'>Boston Neighboohood Boundaries Data</a></p>
+                <p class='credit-words'>Placeholder</p>
+            </div>
+        </div>
 
     </div>
 
 </div>
 
 <style>
+    .ref {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    .reference-links {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    .reference-cluster{
+        display: flex;
+    }
     .credits-container {
         display: flex;
         flex-direction: column;

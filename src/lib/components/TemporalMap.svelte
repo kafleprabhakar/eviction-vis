@@ -205,6 +205,7 @@
             accessToken: 'pk.eyJ1IjoiamVzc3N4IiwiYSI6ImNsdW16ZnIwbzFpbmkya2xobXo1MDJmZ3oifQ.ogmulGwB0XVmVzqZO72KCA',
             style: 'mapbox://styles/mapbox/light-v10',
             zoom: 11,
+            minZoom: 11, 
             center: [-71.0596, 42.3101] // Center on Boston
         });
 

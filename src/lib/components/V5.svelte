@@ -174,7 +174,7 @@
                 ownership = parseFloat(row["corp_own_rate"]) * 100;
             }
         });
-        return `${ownership}`;
+        return `${ownership.toFixed(0)}`;
     }
   
     onMount(async () => {

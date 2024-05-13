@@ -13,15 +13,17 @@
         <div class='reference-links'>
             <div class='reference-cluster'>
                 <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.kaggle.com/datasets/yingzhou474/boston-neighborhoods-geojson'>Boston Neighborhoods</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/census-2020-block-group-neighborhoods'>Boston Neighboohood Boundaries Data</a></p>
                 <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.bostonevictions.org/data'>Boston Evictions</a></p>
-                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
-                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/property-assessment'>Boston Property Assessment</a></p>
             </div>
 
             <div class='reference-cluster'>
-                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/property-assessment'>Boston Property Assessment</a></p>
-                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/census-2020-block-group-neighborhoods'>Boston Neighboohood Boundaries Data</a></p>
-                <p class='credit-words'>Placeholder</p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/2020-census-for-boston#:~:text=In%20the%202020%20Census%2C%20the,tracts%20to%20approximate%20Boston%20neighborhoods.'>Boston 2020 Census</a></p>           
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://data.boston.gov/dataset/property-assessment'>Corporate Ownership Data</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.masscourts.org/eservices/home.page.2'>Court Cases Data</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://www.urbandisplacement.org/maps/housing-precarity-risk-model/'>Eviction Lab</a></p>
+                <p class='credit-words'><a class='credit-link ref' target='_blank' href='https://justshelter.org/stories/#stories-image-1'>Testimonials</a></p>               
             </div>
         </div>
 

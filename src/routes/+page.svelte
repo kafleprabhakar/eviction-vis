@@ -89,25 +89,6 @@
 		<EvictionJudgement />
 	</div>
 
-	<div class='vis-spacer2'>
-		<h3 class='toWho'>Who Are These Evictions Impacting?</h3>
-		<p style='color:#403E3A'> While Boston holds a reputation for its diversity and plethora of vibrant
-			neighborhoods, there exists a troubling pattern of inequality within the area, particularly
-			concerning eviction rates among minority-heavy communities. The city
-			boasts a rich tapestry of cultures and identities, however certain neighborhoods
-			with <b>higher minority populations often bear the brunt of eviction crises</b>
-			compared to those that boast a higher White or Asian population. This disparity
-			underscores systemic issues of housing discrimination, economic disparity,
-			and unequal access to resources. Efforts such as community outreach programs and policy initiatives
-			attempt to address these disparities, but the persistent prevalence of evictions in minority-heavy
-			neighborhoods highlights <b>the vital need for comprehensive and equitable
-			solutions</b> to ensure fair and just housing opportunities for all residents of
-			Boston. Below you will be able to see 4 different demographics in the Boston area, and the correlation between percentage of evictions in each neighborhood against percentage
-		of the demographic in each neighborhood. You will be able to see an upward trend for White and Asian populations while there will be
-	a downward trend for Black and Hispanic Populations. This shows that neighborhoods that are populated with more minorities and those that
-face more evictions. It is more common for someone who is Hispanic or Black in the Boston area to be evicted than someone who is White or Asian.</p>
-	</div>
-
 	<!-- VIS 4 -->
 	<div class='vis-section' id="v4">
 		<V4/>
@@ -203,7 +184,7 @@ face more evictions. It is more common for someone who is Hispanic or Black in t
 	}
 
 	#v4 {
-		margin-bottom: 15rem;
+		margin-bottom: 20rem;
 	}
 
 	#v5 {
@@ -231,24 +212,7 @@ face more evictions. It is more common for someone who is Hispanic or Black in t
 		letter-spacing: .2rem;
 	}
 
-	.vis-spacer2 {
-		background-color: #feb64a;
-		color: #F8F7F5;
-		align-self: center;
-		display: flex;
-		flex-direction: column;
-		padding: 5.5rem;
-		/* padding-right: 10rem;
-		padding-left: 10rem; */
-		margin-bottom: 5rem;
-		text-align: center;
-	}
 
-	.toWho {
-		color: #F8F7F5;
-		margin: 0.5rem;
-		font-size: 3rem;
-	}
 
 	.footer {
 		background-color: #a9a9a9;

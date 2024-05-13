@@ -61,10 +61,10 @@
 
         <div class="v5-words">
             {#if sliderValue === 'Eviction Risk'}
-                <p>Select a demographic to visualize the eviction risk for that group. Hover over the map to see the specific percentage for each neighborhood.</p>
+                <p>Select a demographic to visualize the eviction risk for that group. Hover over the map to see the specific percentage and corporate ownership for each neighborhood.</p>
                 <p>While the data for eviction risk can provide insight into the relative trends for different neighborhoods and demographics, it is <b>important to note households are evicted for different reasons beyond race</b>. The correlations do not necessarily imply causation, but can provide insight on how historical systemic inequalities impact groups today.</p>
             {:else}
-                <p>Select an income range to visualize the rent burden for that group. Hover over the map to see the percentage and more details for each neighborhood.</p>
+                <p>Select an income range to visualize the rent burden for that group. Hover over the map to see the specific percentage, corporate ownership, and more details for each neighborhood.</p>
                 <p>Percentage of households with rent burden refers to the percent of renter households paying more than 30% of their income on housing costs. <b>More than half of Bostonians have to spend more than 30%</b> of their income just to keep themselves housed, meaning families have to choose between paying rent, eating, accessing medicines, or other necessities. Consequences of not paying rent include foreclosure, eviction, and all physical and mental health consquences of homelessness.</p>
                  
             {/if}

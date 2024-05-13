@@ -1,14 +1,29 @@
 <div class='v3-container'>
-    <div class="chart"></div>
+    <div class="sidebar-info">
+        <p>Corporate owners file disproportionally high number of eviction cases in Boston. Throughout the last 10 years, 65-80% of eviction cases every year have been filed by corporates while they only own 15-25% of the properties.</p>
+    </div>
+    <div class="primary">
+        <div class="chart" id="corp-line-chart"></div>
+    </div>
 </div>
 
 <style>
     .v3-container {
         display: flex;
-        flex-direction: column;
         align-items: center;
         padding-top: 1rem;
-        padding-bottom: 8rem
+        padding-bottom: 8rem;
+        margin: 0rem 2rem;
+    }
+    .sidebar-info {
+        width: 35%;
+        min-width: 400px;
+        max-width: 500px;
+        padding: 4rem;
+        text-align: center;
+    }
+    .primary {
+        width:65%;
     }
 </style>
 
@@ -21,11 +36,13 @@
     import { timeParse } from 'd3-time-format';
     import * as d3 from 'd3';
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
-    const width = 1000 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
-
     onMount(() => {
+
+        let container = document.getElementById('corp-line-chart');
+
+        const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+        const width = Math.min(container?.offsetWidth, 800) - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
         d3.csv('/datasets/corp_rates.csv').then(data => {
             console.log(data);
             const svg = select('.chart')

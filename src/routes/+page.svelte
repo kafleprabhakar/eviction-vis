@@ -196,7 +196,7 @@
 	}
 
 	#v3 {
-		margin-bottom: 18rem;
+		margin-bottom: 12rem;
 	}
 
 	#v4 {
